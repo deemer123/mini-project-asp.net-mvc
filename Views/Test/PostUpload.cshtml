@@ -1,0 +1,64 @@
+@model DemoVolunteer.Models.Post
+
+<form method="POST" asp-action="PostUpload" asp-controller="Test" enctype="multipart/form-data">
+    <label for="title" >ชื่อหัวเรือง</label>
+    <input asp-for="Title" type="text" name="title" placeholder="title"  />
+
+    <label for="CategoryId">เลือกประเภท:</label>
+    <select asp-for="CategoryId" name="CategoryId">        
+        @foreach (var category in @ViewBag.Categories){
+            <option  value="@category.CategoryId">@category.Name</option>
+        }
+    </select>
+
+    <label for="location">สถาที่นัดหมาย:</label>
+    <input asp-for="Location" type="text" name="location" placeholder="location"  />
+
+    <label for="category">จำนวนที่รับ:</label>
+    <input asp-for="MaxParticipants" type="number" name="MaxParticipants" placeholder="MaxParticipants"  />
+
+    <label for="Description">ลายละเอียด:</label>
+    <textarea asp-for="Description" placeholder="textarea"></textarea>
+    <label for="date">วันที่นัด:</label>
+    <input asp-for="AppointmentDate" type="date" name="date" placeholder="date"  />
+
+    <label for="timestart">เริ่มเวลา:</label>
+    <input asp-for="TimeStart" type="time" name="timestart" placeholder="time"  />
+
+    <label for="timeend">จบที่เวลา:</label>
+    <input asp-for="TimeEnd" type="time" name="timeend" placeholder="time"  />
+
+    <label for="score">จำนวนชั่วโมง:</label>
+    <input asp-for="Score" type="number" name="score" placeholder="score" />
+
+    <hr/>
+
+    <!-- Hidden field สำหรับ ImgURL -->
+    <input type="hidden" asp-for="ImgURL" />
+
+
+    <label for="img">อัปโหลดรูปภาพ:</label>
+    <input type="file" id="imageInput" accept="image/*" name="imageFile"/>
+    <img id="preview" src="/img/default-post-image.png" alt="Image Preview" width="500" height="600" style="display: block;">
+
+    <button type="submit">Register</button>
+</form>
+
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const preview = document.getElementById('preview');
+
+    imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

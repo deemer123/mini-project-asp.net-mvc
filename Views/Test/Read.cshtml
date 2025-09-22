@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Read Data";
+}
+@model List<DemoVolunteer.Models.Post>
+
+@foreach (var post in Model){
+    <p>@post.Owner.FullName</p>
+    <p>@post.Title</p>
+    <hr>
+}
+
+

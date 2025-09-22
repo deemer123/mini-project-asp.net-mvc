@@ -1,0 +1,15 @@
+@model List<DemoVolunteer.Models.Join>
+
+<h1>สมาชิกกิจกรรม</h1>
+<p>จำนวน @ViewBag.joinAmount / @ViewBag.MaxParticipants</p>
+<ol>
+@if (Model == null || !Model.Any())
+{
+    <p>ยังไม่มีสมาชิก</p>
+}else{
+    @foreach (Join join in Model){
+        <li>@join.User.FullName - @join.User.PhoneNumber - @join.User.Gender - <a href="/Post/JoinDel?joinId=@join.JoinId">ลบ</a></li>
+    }  
+}
+
+</ol>

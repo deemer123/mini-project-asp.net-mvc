@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<form asp-action="Search" asp-controller="Home" method="get">
+    <input type="text" name="keyword" id="keyword">
+    <button type="submit">ค้นหา</button>
+</form>
+
+<hr/>
+
+<h2>เลือกหมวดหมู่</h2>
+<div>
+    <a href="/Home">ทั้งหมด</a>
+    @foreach (var category in @ViewBag.Categories){
+        <a href="/Home/Post?categorieId=@category.CategoryId">@category.Name</a>
+    }
+</div>
+
+<hr />
+
+@model List<DemoVolunteer.Models.Post>
+<h3>รายการสินค้า</h3>
+<ul>
+@foreach (var post in Model)
+{
+    <li>ชื่อ @post.Title - สถานที่ @post.Location - เจ้าของโพส @post.Owner.FullName</li>
+    <img src="@post.ImgURL" width="100px">
+    <a href="/Post/Detail?postId=@post.PostId">ลายละเอียด</a>
+    <hr>
+}
+</ul>

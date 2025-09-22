@@ -1,0 +1,394 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using DemoVolunteer.Data;
+using DemoVolunteer.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Text.Json;
+
+namespace MyMvcProject.Controllers
+{
+    public class PostController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public PostController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        {
+            _context = context;  // ใช้ _context สำหรับ query
+            _userManager = userManager;  // ใช้ _userManager ดึงข้อมูล user 
+        }
+
+        // ส่งค่า Notification Model ผ่านการรับค่าจาก paramitor
+        private Notification notificationModel(string userId, string message)
+        {
+            var notification = new Notification
+            {
+                UserId = userId,
+                Message = message,
+                IsRead = false
+            };
+            return notification;
+        }
+
+        // การสร้างหน้า Create Post
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var categories = await _context.Categories.ToListAsync();
+            ViewBag.categories = categories;
+            //ส่งข้อมูล Categories ไปที่ View ผ่าน ViewBag
+            ViewBag.Categories = _context.Categories.ToList();
+            return View();
+        }
+
+        // รับข้อมูลจาก Form Create Post และ newPost ลงใน DB
+        [HttpPost]
+        public async Task<IActionResult> Create(Post model, IFormFile imageFile, IFormFile imageFile2)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (model == null || user == null)
+            {
+                return Content("Model is null");
+            }
+
+            // ถ้ามีการอัปภาพเข้ารวมกิจกรรม
+            if (imageFile2 != null && imageFile2.Length > 0)
+            {
+                var fileName2 = $"appointImg-{Guid.NewGuid()}{Path.GetExtension(imageFile2.FileName)}";
+                var path2 = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", fileName2);
+                using (var stream = new FileStream(path2, FileMode.Create))
+                {
+                    await imageFile2.CopyToAsync(stream);
+                }
+                model.AppointImg = "/img/" + fileName2; // สมมุติว่ามี field นี้ใน Model
+            }
+            else
+            {
+                model.AppointImg = null;
+            }
+            // ถ้ามีการอัปภาพกิจกรรม
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                // ตั้งชื่อไฟล์เอง เช่น ใช้ชื่อจาก Model หรือเวลาปัจจุบัน
+                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                var customFileName = $"{user.Id}_" + timestamp + Path.GetExtension(imageFile.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", customFileName);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+                // กำหนด ImgURL ใน Model เป็น path สำหรับแสดงภาพ
+                model.ImgURL = "/img/" + customFileName;
+            }
+            else
+            {
+                //กรณีไม่ได้กำหนดรูปภาพ
+                model.ImgURL = "/img/default-post-image.png";
+            }
+            // บันทึก model ลง DB หรือทำงานต่อ
+            var newPost = new Post
+            {
+                Title = model.Title,
+                OwnerId = user.Id,
+                CategoryId = model.CategoryId,
+                Description = model.Description,
+                Location = model.Location,
+                MaxParticipants = model.MaxParticipants,
+                AppointmentDate = model.AppointmentDate,
+                TimeStart = model.TimeStart,
+                TimeEnd = model.TimeEnd,
+                Score = model.Score,
+                Status = "Open",
+                ImgURL = model.ImgURL,
+                AppointImg = model.AppointImg,
+                AppointmentDateEnd = model.AppointmentDateEnd,
+                CreatedAt = DateTime.Now
+            };
+            
+            // var json = JsonSerializer.Serialize(newPost);
+            // Console.WriteLine(json); // หรือ Debug.WriteLine(json);
+
+            // เพิ่มลงใน DB
+            _context.Posts.Add(newPost);
+            await _context.SaveChangesAsync();
+            // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
+            TempData["PopupMessage"] = "สร้างโพสสำเร็จ!";
+            TempData["PopupType"] = "success"; // success, error, inf
+            return Redirect("/Post/Manager");
+        }
+
+        // แสดงรายละเอียดของ post
+        [HttpGet]
+        public async Task<IActionResult> Detail(int postId)
+        {
+            var post = await _context.Posts
+                .Include(p => p.Owner)
+                .Include(p => p.Category)
+                .Include(p => p.Joins)
+                .FirstOrDefaultAsync(p => p.PostId == postId);
+
+            // ตรวจสอบ post เต็มรึยัง?
+            var joins = await _context.Joins
+                .Where(p => p.PostId == postId)
+                .ToListAsync();
+            if (joins.Count == post.MaxParticipants) 
+            {
+                post.Status = "Full";
+                await _context.SaveChangesAsync();
+            }
+            return View(post);
+        }
+
+        // หน้าแก้ไขข้อมูล post
+        [HttpGet]
+        public async Task<IActionResult> Edit(int postId)
+        {
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postId);
+            ViewBag.Categories = _context.Categories.ToList();
+            return View(post);
+        }
+
+        // ดำเนินการแก้ไขข้อมูล post
+        [HttpPost]
+        public async Task<IActionResult> Edit(Post model, IFormFile imageFile, IFormFile imageFile2)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var post = await _context.Posts.FindAsync(model.PostId); // ดึงรายการเดียวตาม PostId
+
+            if (model == null || user == null)
+            {
+                return Content("Model is null");
+            }
+            // ถ้ามีการแก้ไขภาพเข้ารวมกิจกรรม
+            if (imageFile2 != null && imageFile2.Length > 0)
+            {
+                var fileName2 = $"appointImg-{Guid.NewGuid()}{Path.GetExtension(imageFile2.FileName)}";
+                var path2 = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", fileName2);
+                using (var stream = new FileStream(path2, FileMode.Create))
+                {
+                    await imageFile2.CopyToAsync(stream);
+                }
+                model.AppointImg = "/img/" + fileName2; // สมมุติว่ามี field นี้ใน Model
+            }
+            else
+            {
+                model.AppointImg = null;
+            }
+            // ถ้ามีการแก้ไขภาพกิจกรรม
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                // ตั้งชื่อไฟล์เอง เช่น ใช้ชื่อจาก Model หรือเวลาปัจจุบัน
+                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                var customFileName = $"{user.Id}_" + timestamp + Path.GetExtension(imageFile.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", customFileName);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+                // กำหนด ImgURL ใน Model เป็น path สำหรับแสดงภาพ
+                model.ImgURL = "/img/" + customFileName;
+                Console.WriteLine("เปลี่ยนภาพ");
+            }
+            else
+            {
+                Console.WriteLine("ไม่เปลี่ยนภาพ");
+                model.ImgURL = post.ImgURL;
+            }
+            // อัปเดตค่าจากฟอร์ม
+            post.Title = model.Title;
+            post.CategoryId = model.CategoryId;
+            post.Location = model.Location;
+            post.MaxParticipants = model.MaxParticipants;
+            post.Description = model.Description;
+            post.AppointmentDate = model.AppointmentDate;
+            post.TimeStart = model.TimeStart;
+            post.TimeEnd = model.TimeEnd;
+            post.Score = model.Score;
+            post.ImgURL = model.ImgURL;
+            post.AppointImg = model.AppointImg;
+            post.AppointmentDateEnd = model.AppointmentDateEnd;
+            await _context.SaveChangesAsync();
+            
+
+            Console.WriteLine($"วันที่ที่รับมา: {model.AppointmentDate}");
+            Console.WriteLine($"วันที่ปิดที่รับมา: {model.AppointmentDateEnd}");
+            // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
+            TempData["PopupMessage"] = $"แก้ไขโพสตแล้ว!!";
+            TempData["PopupType"] = "success"; // success, error, inf
+            return Redirect("/Post/Manager");
+        }
+
+        // ลบโพส
+        public async Task<IActionResult> Delete(int postId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var post = await _context.Posts.FindAsync(postId);
+            _context.Posts.Remove(post);
+            await _context.SaveChangesAsync();
+
+             // แจ้งเตื่อนเจ้าของ post
+            var notifyOwner = notificationModel(post.OwnerId, $"คุณได้ลบกิจกรรมของคุณในโพสต์ '{post.Title}'");
+            _context.Notifications.Add(notifyOwner);
+            await _context.SaveChangesAsync();
+
+            // แจ้งเตื่อน user ทุกคนที่เข้าร่วมกิจกรรม
+            var joins = await _context.Joins
+                .Where(p => p.PostId == postId)
+                .ToListAsync();
+            foreach (Join join in joins)
+            {
+                var notifyUser = notificationModel(join.UserId, $"กิจกรรมที่คุณได้เข้าร่วมในโพสต์ '{post.Title}' ได้ถูกลบไปแล้ว");
+                _context.Notifications.Add(notifyUser);
+                await _context.SaveChangesAsync();
+            }
+            // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
+            TempData["PopupMessage"] = $"ลบโพสตแล้ว!!";
+            TempData["PopupType"] = "success"; // success, error, inf
+            return Redirect("/Post/Manager");
+        }
+
+        // ขอเข้าร่วมกิจกรรม 
+        [HttpPost]
+        public async Task<IActionResult> Join(int postId)
+        {
+            // ตรวจสอบว่า user ได้ login เข้ามาไหม?
+            if (!(User?.Identity != null && User.Identity.IsAuthenticated))
+            {
+                TempData["PopupMessage"] = "กรุณาเข้าสู่ระบบก่อนเข้าร่วมกิจกรรม!!";
+                TempData["PopupType"] = "error";
+                return RedirectToAction("Login", "User");
+            }
+            // user ได้ login และดึง user model
+            var user = await _userManager.GetUserAsync(User);
+            // ดึงรายการเดียวตาม PostId
+            var post = await _context.Posts
+                .Include(p => p.Owner)
+                .FirstOrDefaultAsync(p => p.PostId == postId);
+            var joins = await _context.Joins
+                .Where(p => p.PostId == postId)
+                .ToListAsync();
+            if (post.Owner.Id == user.Id) // ตรวจสอบว่า userID Login ตรง กับ postOwnerID รึเปล่า?
+            {
+                TempData["PopupMessage"] = "ณเข้าร่วมกิจกรรมของตัวเองไม่ได้!!";
+                TempData["PopupType"] = "error";
+                return Redirect($"/Post/Detail?postId={postId}");
+            }
+            // ตรวจสอบว่ามีการกดเข้าร่วมกิจกรรมซ้ำรึป่าว?
+            var ispost = await _context.Joins
+                            .Where(p => p.UserId == user.Id)
+                            .FirstOrDefaultAsync(p => p.PostId == postId);
+            //ตรวจสอบการเข้าร่วมกิจรรมซ้ำ
+            if (ispost != null)
+            {
+                TempData["PopupMessage"] = "เข้าร่วมกิจรรมซ้ำไม่ได้!!!";
+                TempData["PopupType"] = "error";
+                return Redirect($"/Post/Detail?postId={postId}");
+            }
+            // สร้าง new Join model 
+            var join = new Join
+            {
+                UserId = user.Id,
+                PostId = postId,
+                JoinDate = DateTime.Now,
+                Status = "InProgress"
+            };
+
+            // นำ model ลงบน DB
+            _context.Joins.Add(join);
+            await _context.SaveChangesAsync();
+
+            // แจ้งเตื่อนเจ้าของ post
+            var notifyOwner = notificationModel(post.OwnerId, $"{user.UserName} เข้าร่วมกิจกรรมของคุณในโพสต์ '{post.Title}'");
+            _context.Notifications.Add(notifyOwner);
+            await _context.SaveChangesAsync();
+
+            // แจ้งเตื่อน user ที่เข้าร่วมกิจกรรม
+            var notifyUser = notificationModel(user.Id, $"คุณได้เข้าร่วมกิจกรรมในโพสต์ '{post.Title}'");
+            _context.Notifications.Add(notifyUser);
+            await _context.SaveChangesAsync();
+
+            // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
+            TempData["PopupMessage"] = "เข้าร่วมกิจกรรมสำเร็จ!";
+            TempData["PopupType"] = "success"; // success, error, inf
+
+            return Redirect($"/Post/Detail?postId={postId}");
+        }
+
+        //หน้าจัดการโพสของฉัน
+        public async Task<IActionResult> Manager()
+        {
+            // ตรวจสอบว่า user ได้ login เข้ามาไหม?
+            if (!(User?.Identity != null && User.Identity.IsAuthenticated))
+            {
+                //ไม่ได้ Login
+                ModelState.AddModelError("", "Login First");
+                return RedirectToAction("Login", "User");
+            }
+            var user = await _userManager.GetUserAsync(User);
+            var joins = await _context.Joins.Where(p => p.UserId == user.Id).ToListAsync();
+            var posts = await _context.Posts  //ดึง post พร้อมกับ join และมี OwnerId == userId
+                .Include(p => p.Joins)
+                .Where(p => p.Owner.Id == user.Id)
+                .ToListAsync();
+            ViewBag.joinAmount = joins.Count; //จำนวนโพสสมาชิกอื่น
+            ViewBag.postAmount = joins.Count + posts.Count; //จำนวนโพสทั้งหมด
+            return View(posts);
+        }
+
+        // แสดงรายชื่อสมาชิกของ Post
+        public async Task<IActionResult> PostJoinList(int postId)
+        {
+            var joins = await _context.Joins
+                .Include(p => p.User)
+                .Where(p => p.PostId == postId)
+                .ToListAsync();
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postId);
+            ViewBag.joinAmount = joins.Count;
+            ViewBag.MaxParticipants = post.MaxParticipants;
+            return View(joins);
+        }
+
+        // ลบสมาชิกออกจากกิจกรรม
+        public async Task<IActionResult> JoinDel(int joinId)
+        {
+            // ลบ Join
+            var user = await _userManager.GetUserAsync(User);
+            var join = await _context.Joins  
+                .Include(p => p.Post)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.JoinId == joinId);
+            _context.Joins.Remove(join);
+            await _context.SaveChangesAsync();
+
+             // แจ้งเตื่อนเจ้าของ post
+            var notifyOwner = notificationModel(join.Post.OwnerId, $"{join.User.FullName} ยกเลิกจากกิจกรรม {join.Post.Title}");
+            _context.Notifications.Add(notifyOwner);
+            await _context.SaveChangesAsync();
+
+            // แจ้งเตื่อน user ที่เข้าร่วมกิจกรรม
+            var notifyUser = notificationModel(user.Id, $"คุณยกเลิกจากกิจกรรม {join.Post.Title}");
+            _context.Notifications.Add(notifyUser);
+            await _context.SaveChangesAsync();
+
+            // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
+            TempData["PopupMessage"] = $"ยกเลิกจากกิจกรรมแล้ว!!";
+            TempData["PopupType"] = "success"; // success, error, inf
+            return Redirect("/Post/Manager");
+        }
+        
+        // แสดงรายชื่อการเข้าร่วมกิจกรรม ของ User
+        public async Task<IActionResult> UserJoinList()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var joins = await _context.Joins
+                    .Include(p => p.Post)
+                    .Where(p => p.UserId == user.Id)
+                    .ToListAsync();
+            ViewBag.FullName = user.FullName;
+            ViewBag.Phone = user.PhoneNumber;
+            ViewBag.Email = user.Email;
+            ViewBag.Score = user.Score;
+            return View(joins);
+        }
+    }
+}

@@ -1,0 +1,17 @@
+@model List<DemoVolunteer.Models.Join>
+ 
+<p>ชื่อ: @ViewBag.FullName</p>
+<p>เลขโทรศัพท์: @ViewBag.Phone</p>
+<p>อีเมล: @ViewBag.Email</p>
+<p>เวลาจิตอาสา: @ViewBag.Score</p>
+<hr/>
+<ol>
+@if (Model == null || !Model.Any())
+{
+    <p>ยังไม่มีการเข้าร่วมกิจกรรม</p>
+}else{
+    @foreach (Join join in Model){
+        <li>@join.Status - @join.Post.Title - @join.Post.Score - @join.Post.AppointmentDate.ToString("yyyy-MM-dd") @join.Post.TimeStart.ToString("HH:mm"); - @join.Post.TimeEnd.ToString("HH:mm"); <a href="/Post/JoinDel?joinId=@join.JoinId">ลบ</a></li>
+    }  
+}
+</ol>

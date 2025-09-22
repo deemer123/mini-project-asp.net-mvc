@@ -1,0 +1,90 @@
+@model DemoVolunteer.Models.Post
+
+
+<form method="POST" asp-action="Edit" asp-controller="Post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="PostId" value=@Model.PostId/>
+
+    <label for="img">อัปโหลดรูปภาพ:</label>
+    <input type="file" id="imageInput" accept="image/*" name="imageFile"/>
+    <img id="preview" src=@Model.ImgURL alt="Image Preview" width="500" height="600" style="display: block;">
+
+    <label for="title" >ชื่อหัวเรือง</label>
+    <input asp-for="Title" type="text" name="title" placeholder="title" value=@Model.Title/>
+
+    <label for="CategoryId">เลือกประเภท:</label>
+    <select asp-for="CategoryId" name="CategoryId">        
+        @foreach (var category in @ViewBag.Categories){
+            <option  value="@category.CategoryId">@category.Name</option>
+        }
+    </select>
+
+    <label for="location">สถาที่นัดหมาย:</label>
+    <input asp-for="Location" type="text" name="location" placeholder="location" value=@Model.Location/>
+
+    <label for="category">จำนวนที่รับ:</label>
+    <input asp-for="MaxParticipants" type="number" name="MaxParticipants" placeholder="MaxParticipants"  value=@Model.MaxParticipants/>
+
+    <label for="Description">ลายละเอียด:</label>
+    <textarea asp-for="Description" placeholder="textarea" value=@Model.Description></textarea>
+
+    <label for="date">วันที่นัด:</label>
+    <input asp-for="AppointmentDate" type="date" name="AppointmentDate" placeholder="AppointmentDate" value="@Model.AppointmentDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)"/>
+
+    <label for="timestart">เริ่มเวลา:</label>
+    <input asp-for="TimeStart" type="time" name="timestart" placeholder="time" value="@Model.TimeStart.ToString("HH:mm")"/>
+
+    <label for="timeend">จบที่เวลา:</label>
+    <input asp-for="TimeEnd" type="time" name="timeend" placeholder="time"  value="@Model.TimeEnd.ToString("HH:mm")"/>
+
+    <label for="score">จำนวนชั่วโมง:</label>
+    <input asp-for="Score" type="number" name="score" placeholder="score" value=@Model.Score/>
+
+    <hr/>
+
+    <label for="img">อัปโหลดรูปภาพกิจกรรม:</label>
+    <input type="file" id="imageInput2" accept="image/*" name="imageFile2"/>
+    @if(Model.AppointImg != null){
+        <img id="preview2" src=@Model.AppointImg alt="Image Preview" width="500" height="600" style="display: block;">
+    }
+
+    <label for="date">เวลาปิดโพสต์กิจกรรม:</label>
+    <input asp-for="AppointmentDateEnd" type="date" name="AppointmentDateEnd" placeholder="AppointmentDateEnd" value="@(Model.AppointmentDateEnd.HasValue ? Model.AppointmentDateEnd.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) : "")"/>
+
+    <button type="submit">บันทึก</button>
+</form>
+
+
+@* เปลื่ยน รูปภาพที่แสดงบน หน้าเว็บ *@
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const imageInput2 = document.getElementById('imageInput2');
+    const preview = document.getElementById('preview');
+    const preview2 = document.getElementById('preview2');
+
+    imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+
+    imageInput2.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview2.src = e.target.result;
+                preview2.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

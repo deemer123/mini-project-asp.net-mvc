@@ -1,0 +1,106 @@
+﻿@using System.Text.Json
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DemoVolunteer</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/DemoVolunteer.styles.css" asp-append-version="true" />
+</head>
+<body>    
+    <nav>
+        @if(User.Identity.IsAuthenticated){
+            <span>Welcome  @User.Identity.Name!</span>
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Post" asp-action="Create">Creart Post</a>
+            <a asp-controller="User" asp-action="Register">Register</a>
+            <a asp-controller="User" asp-action="Edit">Edit</a>
+            <a asp-controller="Post" asp-action="UserJoinList">History Join</a>
+            <a asp-controller="Post" asp-action="Manager">Post Manage</a>
+            <a asp-controller="User" asp-action="Logout">Logout</a>
+            @* แจ้งเตือน *@
+            <div style="float: right; position: relative;">
+                <button onclick="toggleDropdown()" style="padding: 5px 10px;">🔔 การแจ้งเตือน</button>
+                <div id="notificationDropdown" style="display: none;">
+                    @await Component.InvokeAsync("Notification")
+                </div>
+            </div>
+            
+        }else{
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="User" asp-action="Login">Login</a> 
+            <a asp-controller="User" asp-action="Register">Register</a>
+        }
+    </nav>
+    <div>
+        @* แสดง pop up *@
+        @if (TempData["PopupMessage"] != null)
+        {
+            <script>
+                window.onload = function () {
+                    @* showPopup("@TempData["PopupMessage"]", "@TempData["PopupType"]"); *@
+                     showPopup(@Html.Raw(Json.Serialize(TempData["PopupMessage"])), "@TempData["PopupType"]");
+                };
+            </script>
+        }
+        @RenderBody()
+    </div>
+</body>
+</html>
+
+
+
+<script>
+     // function เมื่อคลิกดูการแจ้งเตือน
+    function toggleDropdown() {
+        var dropdown = document.getElementById("notificationDropdown");
+        dropdown.style.display = (dropdown.style.display === "none" || dropdown.style.display === "") ? "block" : "none";
+    }
+
+    // Optional: ปิด dropdown เมื่อคลิกนอกพื้นที่
+    document.addEventListener("click", function (event) {
+        var dropdown = document.getElementById("notificationDropdown");
+        var button = event.target.closest("button");
+
+        if (!event.target.closest("#notificationDropdown") && !button) {
+            dropdown.style.display = "none";
+        }
+    });
+</script>
+
+
+<script>
+    // function แสดง pop up แจ้งข้อความ
+    function showPopup(message, type) {
+        const popup = document.createElement("div");
+        popup.innerText = message;
+        popup.style.position = "fixed";
+        popup.style.top = "20px";
+        popup.style.right = "20px";
+        popup.style.padding = "10px 20px";
+        popup.style.borderRadius = "5px";
+        popup.style.color = "#fff";
+        popup.style.zIndex = "9999";
+        popup.style.boxShadow = "0 0 10px rgba(0,0,0,0.2)";
+
+        switch (type) {
+            case "success":
+                popup.style.backgroundColor = "#28a745";
+                break;
+            case "error":
+                popup.style.backgroundColor = "#dc3545";
+                break;
+            default:
+                popup.style.backgroundColor = "#17a2b8";
+        }
+
+        document.body.appendChild(popup);
+
+        setTimeout(() => {
+            popup.remove();
+        }, 3000); // แสดง 3 วินาที
+    }
+</script>

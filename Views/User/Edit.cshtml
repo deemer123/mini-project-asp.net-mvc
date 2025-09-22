@@ -1,0 +1,65 @@
+@model DemoVolunteer.Models.UserViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+<h2>Edit</h2>
+
+<form asp-controller="User" asp-action="Edit" method="post" enctype="multipart/form-data">
+
+
+    <label for="img">อัปเดตโปรไฟล</label>
+    <input type="file" id="imageInput" accept="image/*" name="imageFile"/>
+    <img id="preview" src=@Model.ImgURL alt="ImageProfile" width="200" style="display: block;">
+ 
+    <div>
+        <label asp-for="FirstName">FirstName</label>
+        <input value="@Model.FirstName" asp-for="FirstName"/>
+    </div>
+    <div>
+        <label asp-for="LastName">LastName</label>
+        <input value="@Model.LastName" asp-for="LastName"/>
+    </div>
+    <div>
+        <input type="radio" id="male" name="gender" value="male" asp-for="Gender" checked />
+        <label asp-for="Gender" for="male">male</label>
+        <input type="radio" id="female" name="gender" value="female" asp-for="Gender"/>
+        <label  asp-for="Gender" for="female">female</label>
+    </div>
+    <div>
+        <label asp-for="Email">Email</label>
+        <input  value="@Model.Email" asp-for="Email" readonly="true"/>
+    </div>
+    <div>
+        <label asp-for="UserName">UserName</label>
+        <input value="@Model.UserName" asp-for="UserName" readonly="true"/>
+    </div>
+    <div>
+        <label asp-for="PhoneNumber">PhoneNumber</label>
+        <input value="@Model.PhoneNumber" asp-for="PhoneNumber"/>
+    </div>
+    
+    <button type="submit">Save</button>
+</form>
+
+
+
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const preview = document.getElementById('preview');
+
+    imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+

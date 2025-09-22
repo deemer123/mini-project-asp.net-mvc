@@ -1,0 +1,65 @@
+# Build output
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# ASP.NET Core secrets
+secrets.json
+
+# Logs
+*.log
+
+# NuGet packages
+*.nupkg
+packages/
+.nuget/
+
+# Entity Framework
+Migrations/
+
+# Static web assets cache
+**/*.dswa.cache.json
+**/*.staticwebassets.*
+
+# Compressed files
+*.gz
+
+# OS-specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Others
+*.dbmdl
+*.pdb
+*.cache
+*.vspscc
+*.vssscc
+*.orig
+*.rej
+
+# Ignore environment config
+.env
+.env.*
+
+# Ignore generated files
+*.dll
+*.exe
+
+# Ignore publish output
+publish/
+
+*.jpg
+*.png
+

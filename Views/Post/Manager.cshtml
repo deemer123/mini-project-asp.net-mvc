@@ -1,0 +1,25 @@
+@model List<DemoVolunteer.Models.Post>
+<h1>จัดการโพส</h1>
+
+<p>โพสสมาชิกอื่น @ViewBag.joinAmount</p>
+<p>โพสของฉัน  @Model.Count</h2>
+<p>โพสทั้งหมด @ViewBag.postAmount</p>
+
+<ul>
+@if (Model == null || !Model.Any())
+{
+    <li>ยังไม่มีการโพส</li>
+}
+else{
+    @foreach (Post post in Model)
+    {
+        <li>วันที่สร้าง @post.CreatedAt - ชื่อ @post.Title - จำนวนรับ @post.AmountParticipant/@post.MaxParticipants
+            <a href="/Post/PostJoinList?postId=@post.PostId">ดูจำนวนสมาชิก</a>
+            <a href="/Post/Edit?postId=@post.PostId">แก้ไข</a>
+            <a href="/Post/Delete?postId=@post.PostId">ลบ</a>
+            <a href="#">ปิดรับคนสมัคร</a>
+        </li>
+    }
+}
+
+</ul>
