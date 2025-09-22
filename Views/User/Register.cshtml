@@ -1,8 +1,9 @@
 @{
     ViewData["Title"] = "Register";
 }
-<h2>Register</h2>
 
+<link rel="stylesheet" href="~/css/register.css" />
+@* 
 <form asp-controller="User" method="POST" asp-action="Register">
     <input type="text" name="firstName" placeholder="First Name" required />
     <input type="text" name="lastName" placeholder="Last Name" required />
@@ -15,12 +16,11 @@
     <input type="email" name="email" placeholder="Email" required />
     <input type="password" name="password" placeholder="Password" required />
     <input type="password" name="confirmPassword" placeholder="ConfirmPassword" required />
-    @* <input type="password" name="confirmPassword" placeholder="confirm password" required /> *@
     <input type="tel" name="phoneNumber" placeholder="phone number" required />
     
     <button type="submit">Register</button>
 </form>
-<div asp-validation-summary="All" class="text-danger"></div>
+<div asp-validation-summary="All" class="text-danger"></div> *@
 
 @if (ViewBag.Message != null)
 {
@@ -28,3 +28,50 @@
         @ViewBag.Message
     </div>
 }
+
+
+<main>
+        <div class="content">
+            <div class="register">
+                <div>
+                    <h1 class="title">สมัครสมาชิกเป็นจิตอาสา</h1>
+                </div>
+                <div>
+                    <form asp-controller="User" method="POST" asp-action="Register">
+                        <div class="name">
+                            <label for="fname"></label>
+                            <input type="text" id="fname" name="firstname" placeholder="ชื่อ">
+                            <label for="lname"></label>
+                            <input type="text" id="lname" name="lastname" placeholder="นามสกุล">
+                        </div>
+                        <div class="gender">
+                            <p>เพศ:</p>
+                            <input type="radio" id="male" name="gender" value="MALE">
+                            <label for="male">ชาย</label>
+                            <input type="radio" id="female" name="gender" value="FEMALE">
+                            <label for="female">หญิง</label>
+                        </div>
+                        <div class="email">
+                            <input type="email" name="email" id="email" placeholder="อีเมล">
+                        </div>
+                        <div class="password">
+                            <input type="password" name="password" id="password" placeholder="รหัสผ่าน">
+                        </div>
+                        <div class="password">
+                            <input type="password" name="confirmPassword" id="confirmPassword" placeholder="ยืนยันรหัสผ่าน">
+                        </div>
+                        <div class="tel">
+                            <input type="tel" name="tel" id="tel" placeholder="เบอร์โทรติดต่อ">
+                        </div>
+                        <div class="submit">
+                            <button class="btn bg_yellow" type="submit">สมัครสมาชิก</button>
+                        </div>
+                        <div class="login">
+                            <h5>เป็นสมาชิกแล้ว?</h5>
+                            <h5 id="login"><a asp-controller="User" asp-action="Login">เข้าสู่ระบบ</a></h5>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>

@@ -1,0 +1,408 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+/* วางบนสุดของ nav.css */
+* {
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+nav {
+    width: 100%;
+    background-color: #58a7df;
+    min-height: 80px;
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    z-index: 50;
+}
+
+svg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 70px;
+    cursor: pointer;
+}
+
+
+
+.content1 {
+    border-color: #4d90c0;
+    max-width: 1100px;
+    /* หรือปรับเป็น 1200px ตามดีไซน์ */
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    justify-content: space-between;
+    /* แทน center */
+    gap: 16px;
+    /* ลดจาก 350px */
+    border: 0;
+    /* กันขอบดันความกว้าง */
+    flex-wrap: nowrap;
+    /* ไม่ให้ตกลายบรรทัด */
+    box-sizing: border-box;
+
+}
+
+
+
+.hamburger {
+    display: none;
+    /* ซ่อน hamburger บนจอใหญ่ */
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    /* white-space: nowrap; */
+}
+
+.imagetitle {
+    width: 80px;
+    height: 60px;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.title a {
+    text-decoration: none
+}
+
+.title h1 {
+    color: #fff;
+}
+
+.content1 .dropdown>svg {
+    height: 50px;
+}
+
+/* profile */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    min-width: 220px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 120;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content p {
+    background: #FdFdfd;
+    padding: 10px 15px;
+    display: block;
+}
+
+.dropdown-content a.logout {
+    color: red;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.show {
+    display: block;
+}
+
+/* avatar button (แทน SVG) */
+.avatar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 0;
+    /* padding:0; */
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.avatar-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+.avatar-img {
+    width: 40px;
+    ;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    /* กรอบขาว */
+    object-fit: cover;
+    display: block;
+}
+
+/* ลูกศรเล็กขวา (caret) */
+.caret {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #fff;
+    /* สีขาว */
+}
+
+#profileDropdown [aria-expanded="true"] .caret {
+    border-top-color: transparent;
+    border-bottom: 8px solid #fff;
+    /* พลิกเป็นลูกศรขึ้น */
+    transform: translateY(-6px);
+    /* ⬅️ เลื่อนขึ้นเล็กน้อย */
+}
+
+
+/* bell */
+
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content1 {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    min-width: 600px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 30px;
+    padding-top: 15px;
+}
+
+.dropdown-content1 a {
+    color: black;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content1>.head {
+    font-weight: 400;
+    color: #007bff;
+    padding-bottom: 8px;
+}
+
+.dropdown-content1 a:hover {
+    background-color: #f1f1f1;
+}
+
+.show {
+    display: block;
+}
+
+/* ตั้งค่าพื้นฐานให้ลูกศรใน SVG (ขยาย/ขยับเล็กน้อยเหมือนเดิม) */
+#noticeDropdown .bell path:last-of-type {
+    transform-box: fill-box;
+    /* อ้างอิงกรอบของ path */
+    transform-origin: 50% 50%;
+    transform: translateX(4px) translateY(2px) scale(1.15);
+    /* transition: transform .15s ease; */
+
+}
+
+/* เมื่อ dropdown เปิด -> พลิกลูกศรให้ชี้ขึ้น */
+#noticeDropdown .bell[aria-expanded="true"] path:last-of-type {
+    transform: translateX(4px) translateY(2px) scale(-1.15);
+}
+
+
+/* ===== Mobile < 768px ===== */
+@media (max-width: 769px) {
+    .avatar-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .dropdown>.dropdown-content,
+    .dropdown>.dropdown-content1 {
+        position: fixed;
+        top: 56px;
+        /* ความสูง navbar มือถือของคุณ */
+        left: 16px;
+        right: 16px;
+        width: auto;
+        /* กว้างตามซ้าย/ขวา */
+        min-width: 0;
+        /* กันโดนค่าเก่าทับ */
+        max-width: none;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    /* ขณะเมนูหลักเปิด (hamburger) ให้ dropdown กินทั้งแถวได้เหมือนกัน */
+    .content1.menu-open .dropdown>.dropdown-content1 {
+        top: calc(160px + 8px);
+    }
+
+    .content1.menu-open .dropdown>.dropdown-content {
+        top: calc(220px + 8px);
+    }
+
+    .title h1 {
+        font-size: 24px;
+        line-height: 1;
+        /* ช่วยให้กึ่งกลางแนวตั้งพอดี */
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-weight: 800;
+        /* ให้หนาตามดีไซน์ */
+        letter-spacing: 0.3px;
+    }
+
+    nav {
+        min-height: 56px;
+    }
+
+    /* คอนเทนเนอร์แถบฟ้า */
+    .content1 {
+        min-height: 56px;
+        /* ให้แถวบนสูงเท่าบาร์ */
+        display: flex;
+        max-width: 100%;
+        align-items: center;
+        flex-wrap: nowrap;
+        /* ไม่ให้กว้างเกิน viewport */
+        width: 100%;
+        height: auto;
+        padding: 0 16px !important;
+        gap: 0px !important;
+        /* ลดจาก 350px */
+        justify-content: space-between;
+        /* แทนการใช่ gap ใหญ่ */
+        border-width: 0;
+        /* กันเผื่อขอบดันเกินจอ */
+        box-sizing: border-box;
+    }
+
+    .content1.menu-open {
+        flex-wrap: wrap;
+    }
+
+    .content1.menu-open .button {
+        display: grid;
+        grid-template-columns: 1fr;
+        /* เรียง "แนวตั้ง" ตามตัวอย่าง */
+        gap: 8px;
+        width: 100%;
+        margin-top: 8px;
+        margin-bottom: 10px;
+    }
+
+    .content1.menu-open .button>a {
+        display: block;
+        width: 100%;
+    }
+
+    .content1.menu-open .b1,
+    .content1.menu-open .button1 {
+        width: 100%;
+        height: 32px;
+        border-radius: 10px;
+        padding: 0;
+    }
+
+    /* โลโก้เล็กลงบนมือถือ */
+    .imagetitle {
+        width: 60px;
+        height: 50px;
+    }
+
+    /* ซ่อนปุ่ม 3 ปุ่มตามที่ตั้งไว้ */
+    .button {
+        display: none;
+    }
+
+    .hamburger {
+        display: inline-flex;
+
+        width: 36px;
+        height: 36px;
+        /* สีพื้นปุ่มฟ้า + เส้นขอบขาวโปร่งเล็กน้อย */
+        background-color: #6cb0de;
+        border: 0px solid rgba(255, 255, 255, 0.7);
+        /* ให้เนื้อหากึ่งกลาง (แม้จะไม่มีเนื้อหาในปุ่ม) */
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        cursor: pointer;
+        /* นุ่มนวลเวลา hover/active */
+        transition: background-color 0.15s ease, box-shadow 0.15s ease,
+            transform 0.15s ease, border-color 0.15s ease;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    /* วาด "สามขีด" สีขาวด้วย pseudo-element เดียว + เงาเป็น 3 เส้น */
+    .hamburger::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 18px;
+        height: 2px;
+        background: #fff;
+        border-radius: 1px;
+        transform: translate(-50%, -50%);
+        /* ทำเส้นบน/ล่างด้วย box-shadow */
+        box-shadow: 0 -6px 0 #fff, 0 6px 0 #fff;
+    }
+
+    /* เอฟเฟกต์ hover ให้สว่างขึ้นเล็กน้อย */
+    .hamburger:hover {
+        background: #79b9e4;
+        /* ฟ้าสว่างขึ้นนิด */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+        transform: translateY(-1px);
+    }
+
+    /* ขณะกด */
+    .hamburger:active {
+        transform: translateY(0);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    /* รองรับคีย์บอร์ด/การเข้าถึง */
+    .hamburger:focus-visible {
+        outline: 2px dashed #ffffff;
+        outline-offset: 2px;
+    }
+
+    .dropdown svg:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+        border-radius: 6px;
+    }
+}

@@ -1,0 +1,296 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+* {
+  margin: 0%;
+  font-family: "Inter", sans-serif;
+}
+
+
+main {
+  display: flex;
+  justify-content: center;
+  padding: 0 2rem;
+}
+
+.content {
+  max-width: 1100px;
+  width: 100%;
+  padding: 2rem 1rem;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.edit {
+  width: 500px;
+  height: auto;
+  margin: 50px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+form>div>.title {
+  color: #FFCB1F;
+  font-weight: 500;
+  text-align: center;
+  padding: 10px;
+}
+
+input[type=text],
+select {
+  width: 40%;
+  padding: 12px;
+  margin: 10px;
+  display: inline-block;
+  border: 1px solid #9b9b9b;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+input[type=email],
+input[type=password],
+input[type=tel] {
+  width: 85%;
+  padding: 12px;
+  margin: 5px;
+  display: inline-block;
+  border: 1px solid #9b9b9b;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+button[type=submit] {
+  width: 85%;
+  margin-bottom: 20px;
+}
+
+
+form>.name {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.name>input {
+  border-radius: 4px;
+}
+
+
+form>.gender {
+  display: flex;
+  justify-content: start;
+  margin-bottom: 10px;
+  margin-left: 55px;
+  gap: 40px;
+  font-size: medium;
+  font-weight: 400;
+}
+
+/* ขยายขนาด radio ในแถว gender เล็กน้อย + จัดระยะให้สวย */
+form>.gender input[type="radio"] {
+  transform: scale(1.4);
+  /* ปรับขนาด: 1.1–1.4 ตามชอบ */
+  vertical-align: middle;
+  margin-right: 6px;
+  /* ระยะห่างจากข้อความ */
+  cursor: pointer;
+}
+
+/* ทำให้พื้นที่คลิกกว้างขึ้นและจัดกึ่งกลางแนวตั้ง */
+form>.gender label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+
+form>.email,
+.password,
+.tel,
+.submit {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+
+}
+
+.tel {
+  margin-bottom: 20px;
+}
+
+form>.email>input,
+.password>input,
+.tel>input {
+  border-radius: 4px;
+}
+
+.submit>input {
+  background-color: #FFCB1F;
+  border-radius: 5px;
+  margin-bottom: 35px;
+}
+
+.pic {
+  --avatar-size: 156px;
+  /* ขนาดรูปหลัก ปรับได้ */
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding-top: 30px;
+
+}
+
+.pic img {
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  border-radius: 50%;
+  object-fit: cover;
+  /* ครอบรูปพอดีวง */
+  background: #f0f0f0;
+  /* เผื่อรูปโหลดไม่ทัน */
+  border: 4px solid #FFCB1F;
+  /* วงแหวนเหลือง */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+  cursor: pointer;
+}
+
+.pic:hover::after {
+  filter: brightness(0.95);
+}
+
+/* ปุ่มแก้ไข (ดินสอ) ซ้อนมุมล่างขวา */
+.pic::after {
+  content: "✎";
+  /* ใช้สัญลักษณ์ดินสอ (ไม่ต้องแก้ HTML) */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  background: #FFCB1F;
+  border: 3px solid #fff;
+  /* ขอบขาวรอบ badge */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+  /* เลื่อนจาก “กึ่งกลางรูป” ไปมุมล่างขวาเล็กน้อย */
+  transform:
+    translate(calc(var(--avatar-size)/2 - 45px),
+      calc(var(--avatar-size)/2 - 30px));
+}
+
+/* ===== Overlay สำหรับเปลี่ยนรูป ===== */
+.avatar-overlay[hidden] {
+  display: none;
+}
+/* ซ่อน input file */
+
+.avatar-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  background: rgba(0, 0, 0, .4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.avatar-modal {
+  width: min(480px, 94vw);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.avatar-modal h3 {
+  margin: 0;
+  font-weight: 700;
+}
+
+.avatar-hint {
+  color: #555;
+  font-size: .95rem;
+}
+
+#avatarPreview {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #f0f0f0;
+  border: 3px solid #FFCB1F;
+  justify-self: center;
+}
+
+.avatar-input input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #9b9b9b;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.avatar-error {
+  color: #c0392b;
+  min-height: 1.2em;
+  /* กันกระโดด */
+}
+
+.avatar-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 1024px) {
+  main {
+    background: #fff;
+    padding: 0;
+  }
+
+  .edit {
+    margin: 0;
+  }
+
+  form>.gender {
+    gap: 40px;
+  }
+}
+
+@media (max-width: 767.99px) {
+  .content {
+    padding: 0%;
+  }
+
+  form>.gender {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pic {
+    --avatar-size: 136px;
+  }
+
+  .pic::after {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+    transform:
+      translate(calc(var(--avatar-size)/2 - 40px),
+        calc(var(--avatar-size)/2 - 35px));
+  }
+}

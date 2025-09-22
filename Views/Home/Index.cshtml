@@ -1,33 +1,90 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var selectedCategoryId = ViewBag.SelectedCategoryId as int?;
+    var categories = ViewBag.Categories as List<DemoVolunteer.Models.Category>;
+    var selectedCategory = categories?.FirstOrDefault(c => c.CategoryId == selectedCategoryId);
 }
 
-@* (User?.Identity != null && User.Identity.IsAuthenticated) *@
 
-<form asp-action="Search" asp-controller="Home" method="get">
-    <input type="text" name="keyword" id="keyword">
-    <button type="submit">ค้นหา</button>
-</form>
-<hr/>
+<link rel="stylesheet" href="~/css/index.css" />
 
-<h2>เลือกหมวดหมู่</h2>
-<div>
-    <a href="/Home">ทั้งหมด</a>
-    @foreach (var category in @ViewBag.Categories){
-        <a href="/Home/Post?categorieId=@category.CategoryId">@category.Name</a>
-    }
-</div>
+<main class="main">
+    <div class="content">
 
-<hr />
+        <!-- for title -->
+        <div class="layer1">
+            <img style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; overflow: hidden;"
+                src="https://s.imgz.io/2025/09/08/download-1f4108ab663ec19eb.png" alt="picture">
+            <div class="text1">
+                <h1>มาปันสุข</h1>
+                <p>มาปันสุขให้กับสังคมไทยให้ สดใจ กัน.. <br>
+                    หากคุณคือ “อาสา”</p>
+            </div>
+        </div>
+        <!-- for activity -->
+        <div class="layer2" style="display: flex;">
+            <hr class="line">
+            <h2 class="title2">กิจกรรมจิตอาสาที่เปิดรับ</h2>
+            <hr class="line">
+        </div>
+        <!-- for search -->
+        <div class="search-container">
+            <input type="text" placeholder="ค้นหางานกิจกรรม" class="search-input">
+            <button class="search-button" style="display: flex; align-items: center; color: black;">ค้นหา</button>
+        </div>
+        <!-- for select activity -->
 
-@model List<DemoVolunteer.Models.Post>
-<h3>รายการสินค้า</h3>
-<ul>
-@foreach (var post in Model)
+        <div class="selectbutton">
+            @foreach (var category in @ViewBag.Categories)
+            {
+                <button class="button2"><a asp-controller="Home" asp-action="Index" asp-route-categorieId="@category.CategoryId">@category.Name</a></button>
+            }
+        </div>
+
+
+
+        @* all post *@
+        @model List<DemoVolunteer.Models.Post>
+        <div class="showactivity">
+            @foreach (var post in Model)
 {
-    <li>ชื่อ @post.Title - สถานที่ @post.Location - เจ้าของโพส @post.Owner.FullName</li>
-    <img src="@post.ImgURL" width="100px">
-    <a href="/Post/Detail?postId=@post.PostId">ลายละเอียด</a>
-    <hr>
+    if (selectedCategoryId == null || post.CategoryId == selectedCategoryId)
+    {
+        
+        <div class="activity">
+            <img src="@post.ImgURL" width="100px" alt="volunteer">
+            <h4>@post.Title</h4>
+            <p>
+                สถานที่: @post.Location <br>
+                วันที่: @post.AppointmentDate.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("th-TH")) <br>
+                เวลา: @post.TimeStart.ToString("HH:mm") - @post.TimeEnd.ToString("HH:mm") น. <br>
+                ผู้จัด: @post.Owner.FullName
+            </p>
+            <div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <button class="btn join">เข้าร่วม</button>
+                }
+                else
+                {
+                    <button><a asp-controller="User" asp-action="Login">เข้าร่วม</a></button>
+                }
+            </div>
+        </div>
+    }
 }
-</ul>
+            
+
+            @* next pages *@
+        </div>
+         <div class="sliderbar" id="pager" aria-label="เปลี่ยนหน้า">
+                <button class="swiper-button" data-dir="-1" aria-label="ก่อนหน้า">‹</button>
+                <div class="sliderbar-track" id="pagerTrack"></div>
+                <button class="swiper-button" data-dir="1" aria-label="ถัดไป">›</button>
+            </div>
+    </div>
+    </div>
+
+
+</main>
+    <script src="~/js/index.js"></script>

@@ -1,25 +1,101 @@
 @model List<DemoVolunteer.Models.Post>
-<h1>จัดการโพส</h1>
+
+<link rel="stylesheet" href="~/css/managepost.css" />
+@* <h1>จัดการโพส</h1>
 
 <p>โพสสมาชิกอื่น @ViewBag.joinAmount</p>
-<p>โพสของฉัน  @Model.Count</h2>
+<p>โพสของฉัน @Model.Count</h2>
 <p>โพสทั้งหมด @ViewBag.postAmount</p>
 
 <ul>
-@if (Model == null || !Model.Any())
-{
-    <li>ยังไม่มีการโพส</li>
-}
-else{
-    @foreach (Post post in Model)
+    @if (Model == null || !Model.Any())
     {
-        <li>วันที่สร้าง @post.CreatedAt - ชื่อ @post.Title - จำนวนรับ @post.AmountParticipant/@post.MaxParticipants
-            <a href="/Post/PostJoinList?postId=@post.PostId">ดูจำนวนสมาชิก</a>
-            <a href="/Post/Edit?postId=@post.PostId">แก้ไข</a>
-            <a href="/Post/Delete?postId=@post.PostId">ลบ</a>
-            <a href="#">ปิดรับคนสมัคร</a>
-        </li>
+        <li>ยังไม่มีการโพส</li>
     }
-}
+    else
+    {
+        @foreach (Post post in Model)
+        {
+            <li>วันที่สร้าง @post.CreatedAt - ชื่อ @post.Title - จำนวนรับ @post.AmountParticipant/@post.MaxParticipants
+                <a href="/Post/PostJoinList?postId=@post.PostId">ดูจำนวนสมาชิก</a>
+                <a href="/Post/Edit?postId=@post.PostId">แก้ไข</a>
+                <a href="/Post/Delete?postId=@post.PostId">ลบ</a>
+                <a href="#">ปิดรับคนสมัคร</a>
+            </li>
+        }
+    }
 
-</ul>
+</ul> *@
+
+
+<main>
+    <div class="content">
+        <div class="layer-1">
+            <div class="title_summary">
+                <h2>จัดการโพสต์กิจกรรมของฉัน</h2>
+            </div>
+
+            <div class="summary-boxes">
+                <div class="box orange">โพสต์สมาชิกอื่น<br><br>@ViewBag.joinAmount</div>
+                <div class="box green">โพสต์ของฉัน<br><br>@Model.Count</div>
+                <div class="box blue">โพสต์ทั้งหมด<br><br>@ViewBag.postAmount</div>
+            </div>
+            <div class="forpost"><a asp-controller="Post" asp-action="Create"><button
+                        class="btn bg_yellow">เพิ่มโพสต์</button></a></div>
+            @if (Model == null || !Model.Any())
+            {
+                <div>ยังไม่มีโพสต์</div>
+            }
+            else
+            {
+                @foreach (Post post in Model)
+                {
+
+                    <div class="layer-2">
+                        <table>
+                            <thead>
+                                <th class="headtable" colspan="5">รายการจิตอาสาที่ฉันสร้าง</th>
+                                <tr>
+                                    <th>วันที่สร้าง</th>
+                                    <th>งานอาสา</th>
+                                    <th>จำนวนรับ</th>
+                                    <th>ดูสมาชิก</th>
+                                    <th>แก้ไขโพสต์</th>
+                                    <th>ลบโพสต์</th>
+                                    <th>สถานะรับสมัคร</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@post.CreatedAt</td>
+                                    <td><a href="#">@post.Title.</a></td>
+                                    <td>@post.AmountParticipant / @post.MaxParticipants คน</td>
+                                    <td><button class="btn view-members" data-href="viewmember.html">ดูสมาชิก</button></td>
+                                    <td><button class="btn bg_blue">แก้ไขโพสต์</button></td>
+                                    <td><button class="btn cancal" data-confirm="คุณต้องการลบโพสต์ที่คุณสร้าง ใช่ไหม?"
+                                            data-confirm-title="ยืนยันการยกเลิก" data-ok-text="ยืนยัน"
+                                            data-cancel-text="ปิด">ลบโพสต์</button></td>
+                                    <td><button class="btn join">เปิดรับสมัคร</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <!-- Overlay for View Member -->
+    <div id="memberOverlay" class="overlay" hidden>
+        <div class="overlay__backdrop" data-close></div>
+        <div class="overlay__panel" role="dialog" aria-modal="true" aria-labelledby="ov-title">
+            <button class="overlay__close btn bg_white" type="button" aria-label="ปิด" data-close>x</button>
+            <div id="overlay-body" class="overlay-body">
+                <!-- เนื้อหาของสมาชิกจะถูกโหลดที่นี่ -->
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script src="~/js/fecth_viewmember.js"></script>
+<script src="~/js/confrim.js"></script>

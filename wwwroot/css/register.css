@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+* {
+  margin: 0%;
+  font-family: "Inter", sans-serif;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  padding: 0 2rem;
+}
+
+.content {
+  max-width: 1100px;
+  width: 100%;
+  padding: 2rem 1rem;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register {
+  width: 500px;
+  height: 630px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.register>div>.title {
+  color: #FFCB1F;
+  font-weight: 500;
+  text-align: center;
+  padding: 30px;
+}
+
+input[type=text],
+select {
+  width: 40%;
+  padding: 12px;
+  margin: 10px;
+  display: inline-block;
+  border: 1px solid #9b9b9b;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+input[type=email],
+input[type=password],
+input[type=tel],
+button[type=submit]{
+  width: 85%;
+  padding: 12px;
+  margin: 10px;
+  display: inline-block;
+  border: 1px solid #9b9b9b;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+
+
+form>.name {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.name>input {
+  border-radius: 4px;
+}
+
+form>.gender {
+  display: flex;
+  justify-content: start;
+  margin-bottom: 10px;
+  margin-left: 55px;
+  gap: 40px;
+  font-size: medium;
+  font-weight: 400;
+}
+
+/* ขยายขนาด radio ในแถว gender เล็กน้อย + จัดระยะให้สวย */
+form>.gender input[type="radio"] {
+  transform: scale(1.4);
+  /* ปรับขนาด: 1.1–1.4 ตามชอบ */
+  vertical-align: middle;
+  margin-right: 6px;
+  /* ระยะห่างจากข้อความ */
+  cursor: pointer;
+}
+
+/* ทำให้พื้นที่คลิกกว้างขึ้นและจัดกึ่งกลางแนวตั้ง */
+form>.gender label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+
+
+form>.email,
+.password,
+.tel,
+.submit {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+form>.email>input,
+.password>input,
+.tel>input {
+  border-radius: 4px;
+}
+
+.submit>input {
+  background-color: #FFCB1F;
+  border-radius: 5px;
+}
+
+.login {
+  display: flex;
+  justify-content: center;
+}
+
+.login>h5 {
+  font-weight: 300;
+}
+
+.login>#login,
+a {
+  color: #FFCB1F;
+}
+
+/* label {display: block;} */
+
+
+@media (max-width: 1024px) {
+
+  main {
+    background: #fff;
+    padding: 0;
+  }
+
+  .register {
+    margin: 0;
+  }
+
+  form>.gender {
+    gap: 40px;
+  }
+
+}
+
+@media (max-width: 769px) {
+  .content{
+    padding: 0px;
+  }
+  form>.gender {
+    gap: 20px;
+  }
+}

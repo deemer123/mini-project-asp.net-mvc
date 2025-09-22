@@ -1,14 +1,30 @@
 @{
     ViewData["Title"] = "Login";
 }
-<h2>Login</h2>
-<form method="post">
-    <div>
-        <input type="email" name="email" placeholder="Email" required />
-    </div>
-    <div>
-        <input type="password" name="password" placeholder="Password" required />
-    </div>
-    <button type="submit">Login</button>
-</form>
-<div asp-validation-summary="All" class="text-danger"></div>
+<link rel="stylesheet" href="~/css/login.css" />
+<main>
+        <div class="content">
+            <div class="login">
+                <div>
+                    <h1 class="title">เข้าสู่ระบบ</h1>
+                </div>
+                <div>
+                    <form method="post">
+                        <div class="email">
+                            <input type="email" name="email" id="email" placeholder="อีเมล">
+                        </div>
+                        <div class="password">
+                            <input type="password" name="password" id="password" placeholder="รหัสผ่าน">
+                        </div>
+                        <div class="submit">
+                            <button class="btn bg_yellow" type="submit">เข้าสู่ระบบ</button>
+                        </div>
+                        <div class="register">
+                            <h5>ยังไม่เป็นสมาชิก?</h5>
+                            <h5 id="register"><a asp-controller="User" asp-action="Register">สมัครสมาชิก</a></h5>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
