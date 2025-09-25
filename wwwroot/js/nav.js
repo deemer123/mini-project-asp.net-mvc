@@ -74,3 +74,16 @@
     if(e.key === 'Escape') closeAll();
   });
 })();
+
+document.querySelectorAll('.status').forEach(function(item) {
+  const status = item.querySelector('.status');
+  
+  // สมมุติว่าเรามีตัวแปรหรือเงื่อนไขที่บอกว่าเป็นการแจ้งเตือนใหม่หรือไม่
+  const isNewNotification = item.classList.contains('new');
+  
+  if (isNewNotification) {
+    item.style.visibility = 'visible'; // แสดง div แจ้งเตือน
+  } else {
+    item.style.visibility = 'hidden'; // ซ่อน div แจ้งเตือน
+  }
+});

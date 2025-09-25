@@ -17,7 +17,7 @@
         @foreach (Post post in Model)
         {
             <li>วันที่สร้าง @post.CreatedAt - ชื่อ @post.Title - จำนวนรับ @post.AmountParticipant/@post.MaxParticipants
-                <a href="/Post/PostJoinList?postId=@post.PostId">ดูจำนวนสมาชิก</a>
+                <a href="/Post/PostJoinList?postId=@post.PostId">ดูจำนวนสมาชิก</a>x`
                 <a href="/Post/Edit?postId=@post.PostId">แก้ไข</a>
                 <a href="/Post/Delete?postId=@post.PostId">ลบ</a>
                 <a href="#">ปิดรับคนสมัคร</a>
@@ -70,12 +70,15 @@
                                     <td>@post.CreatedAt</td>
                                     <td><a href="#">@post.Title.</a></td>
                                     <td>@post.AmountParticipant / @post.MaxParticipants คน</td>
-                                    <td><button class="btn view-members" data-href="viewmember.html">ดูสมาชิก</button></td>
-                                    <td><button class="btn bg_blue">แก้ไขโพสต์</button></td>
-                                    <td><button class="btn cancal" data-confirm="คุณต้องการลบโพสต์ที่คุณสร้าง ใช่ไหม?"
-                                            data-confirm-title="ยืนยันการยกเลิก" data-ok-text="ยืนยัน"
-                                            data-cancel-text="ปิด">ลบโพสต์</button></td>
-                                    <td><button class="btn join">เปิดรับสมัคร</button></td>
+                                    <td><a class="btn view-members" asp-controller="Post" asp-action="PostJoinList"  asp-route-postId="@post.PostId"
+                                            data-href="viewmember.html">ดูสมาชิก</a></td>
+                                    <td><a class="btn bg_blue" asp-controller="Post" asp-action="Edit" asp-route-postId="
+                                            @post.PostId">แก้ไขโพสต์</a></td>
+                                    <td><a class="btn cancal" data-confirm="คุณต้องการลบโพสต์ที่คุณสร้าง ใช่ไหม?"
+                                            data-confirm-title="ยืนยันการยกเลิก" data-ok-text="ยืนยัน" data-cancel-text="ปิด"
+                                            asp-controller="Post" asp-action="Delete"
+                                            asp-route-postId="@post.PostId">ลบโพสต์</a></td>
+                                    <td><a class="btn join" id="toggleBtn">เปิดรับสมัคร</a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -99,3 +102,4 @@
 
 <script src="~/js/fecth_viewmember.js"></script>
 <script src="~/js/confrim.js"></script>
+<script src="~/js/managepost_toggle.js"></script>
