@@ -1,6 +1,6 @@
 @model List<DemoVolunteer.Models.Join>
- 
-<p>ชื่อ: @ViewBag.FullName</p>
+<link rel="stylesheet" href="~/css/history_join.css" />
+@* <p>ชื่อ: @ViewBag.FullName</p>
 <p>เลขโทรศัพท์: @ViewBag.Phone</p>
 <p>อีเมล: @ViewBag.Email</p>
 <p>เวลาจิตอาสา: @ViewBag.Score</p>
@@ -14,4 +14,89 @@
         <li>@join.Status - @join.Post.Title - @join.Post.Score - @join.Post.AppointmentDate.ToString("yyyy-MM-dd") @join.Post.TimeStart.ToString("HH:mm"); - @join.Post.TimeEnd.ToString("HH:mm"); <a href="/Post/JoinDel?joinId=@join.JoinId">ลบ</a></li>
     }  
 }
-</ol>
+</ol> *@
+
+
+
+    <main>
+        <div class="content-1">
+            <div class="layer-1">
+                <div class="profile">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHXi6kWCo1P3qJAuOnEAs6jWS1Dg1BqRkk8Q&s"
+                        alt="รูปโปรไฟล์">
+                </div>
+                <div class="description">
+                    <h2 style="font-size: 2rem; font-weight: 300;">@ViewBag.FullName</h2>
+                    <p style="color: #2E7CF3; font-weight: bold;">ข้อมูลติดต่อ</p>
+                    <p>เบอร์: @ViewBag.Phone</p>
+                    <p>อีเมล: @ViewBag.Email</p>
+                    <p style="color: #2E7CF3; font-weight: bold;">เวลาที่เคยทำจิตอาสา :</p>
+                    <p>@ViewBag.Score ชม.</p>
+                </div>
+            </div>
+
+            
+            <div class="layer-2">
+            @if (Model == null || !Model.Any())
+                {
+                <table>
+                    <thead>
+                        <th class="headtable" colspan="5">งานจิตอาสาที่เข้าร่วม</th>
+                        <tr>
+                            <th>สถานะ</th>
+                            <th>งานอาสา</th>
+                            <th>ชั่วโมง</th>
+                            <th>วันที่จัดกิจกรรม</th>
+                            <th>เวลาทำกิจกรรม</th>
+                            <th>ยกเลิกกิจกรรม</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="status_activity wait">รอเข้าร่วมกิจกรรม</td>
+                            <td><a href="#">อาสาปลูกป่าชายเลน บางปู ...</a></td>
+                            <td>5</td>
+                            <td>09/พ.ย./2567 - 15/พ.ย./2567</td>
+                            <td>08:30 - 15:30</td>
+                            <td><button class="btn cancal">ยกเลิก</button></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            }else{
+                @foreach (Join join in Model){
+                <table>
+                    <thead>
+                        <th class="headtable" colspan="5">งานจิตอาสาที่เข้าร่วม</th>
+                        <tr>
+                            <th>สถานะ</th>
+                            <th>งานอาสา</th>
+                            <th>ชั่วโมง</th>
+                            <th>วันที่จัดกิจกรรม</th>
+                            <th>เวลาทำกิจกรรม</th>
+                            <th>ยกเลิกกิจกรรม</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="status_activity wait">@join.Status</td>
+                            <td><a href="#">@join.Post.Title</a></td>
+                            <td>@join.Post.Score</td>
+                            <td> @join.Post.AppointmentDate.ToString("yyyy-MM-dd") - @join.Post.TimeEnd.ToString("HH:mm")</td>
+                            <td>08:30 - 15:30</td>
+                            <td><button class="btn cancal"><a asp-controller="Post" asp-action="JoinDel" >ยกเลิก</a></button></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+    }  
+}
+
+            
+        @* asp-all-route-data="@join.JoinId" <li>@join.Status - @join.Post.Title - @join.Post.Score - @join.Post.AppointmentDate.ToString("yyyy-MM-dd") @join.Post.TimeStart.ToString("HH:mm"); - @join.Post.TimeEnd.ToString("HH:mm"); <a href="/Post/JoinDel?joinId=@join.JoinId">ลบ</a></li> *@
+
+            </div>
+        </div>
+    </main>
+
+<script src="~/js/comfirm.js"></script>
