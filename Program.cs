@@ -24,7 +24,6 @@ app.UseAuthentication(); // ใช้ Identity
 app.UseAuthorization();
 
 app.MapDefaultControllerRoute();
-
 // app.UseStaticFiles();
 // app.UseAuthentication(); // ต้องมี
 
@@ -39,7 +38,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization();
 
 app.MapStaticAssets();
 

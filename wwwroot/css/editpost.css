@@ -103,8 +103,8 @@ form textarea {
 }
 
 .submit-btn {
-  background-color: #fbc02d;
-  color: black;
+  background-color: #2e9aec;
+  color: white;
   border: none;
   padding: 14px;
   border-radius: 8px;
@@ -118,7 +118,7 @@ form textarea {
 }
 
 .submit-btn:hover {
-  background-color: #f9a825;
+  background-color: #0078D4;
 }
 
 
@@ -169,8 +169,8 @@ form textarea {
 .datetime-wrapper {
   display: flex;
   gap: 10px;
-  /* เพิ่มช่องว่างระหว่าง date และ time */
   align-items: center;
+  /* เพิ่มช่องว่างระหว่าง date และ time */
 }
 
 .start-date,
@@ -205,7 +205,6 @@ form textarea {
   object-position: center; /* ให้อยู่กลาง */
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* เงาเล็กน้อย */
 }
-
 
 .addpost-image-container .edit-button:hover {
   background-color: #F9A825;

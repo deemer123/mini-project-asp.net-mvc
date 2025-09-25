@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using DemoVolunteer.Models;
 using DemoVolunteer.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace DemoVolunteer.Controllers;
 
@@ -96,6 +97,7 @@ public class UserController : Controller
     {
         // ดึงข้อมูลของ user ที่ login
         var user = await _userManager.GetUserAsync(User);
+
         if (user == null)
         {
             return RedirectToAction("Login", "User");
@@ -128,6 +130,7 @@ public class UserController : Controller
             return Json(errors);
         }
         var user = await _userManager.GetUserAsync(User);
+        
         if (user == null) return RedirectToAction("Login", "User");
         if (imageFile != null && imageFile.Length > 0)
         {

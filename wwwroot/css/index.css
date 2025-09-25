@@ -106,6 +106,10 @@ main {
     background-color: #E6E6E6;
     padding: 8px 14px;
 }
+.btn.bg_blue{
+    padding: 16px;
+    font-size: 15px;
+}
 
 .showactivity {
     display: grid;
@@ -122,7 +126,7 @@ main {
 .activity {
     width: 300px;
     height: 400px;
-    background-color: #f1f1f2;
+    background-color: #fcfbfb;
     border-radius: 8px;
     box-shadow: 0 0 8px rgba(0, 0, 0, .05);
 }

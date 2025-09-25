@@ -4,9 +4,8 @@
     var categories = ViewBag.Categories as List<DemoVolunteer.Models.Category>;
     var selectedCategory = categories?.FirstOrDefault(c => c.CategoryId == selectedCategoryId);
 }
-
-
 <link rel="stylesheet" href="~/css/index.css" />
+<link rel="stylesheet" href="~/css/style_global.css" />
 
 <main class="main">
     <div class="content">
@@ -29,19 +28,17 @@
         </div>
         <!-- for search -->
         <div class="search-container">
-            <input type="text" placeholder="ค้นหางานกิจกรรม" class="search-input">
-            <button class="search-button" style="display: flex; align-items: center; color: black;">ค้นหา</button>
-        </div>
+                <input type="text" placeholder="ค้นหางานกิจกรรม" class="search-input" />
+                <button class="btn bg_blue">ค้นหา</button>
+            </div>
         <!-- for select activity -->
 
         <div class="selectbutton">
             @foreach (var category in @ViewBag.Categories)
             {
-                <button class="button2"><a asp-controller="Home" asp-action="Index" asp-route-categorieId="@category.CategoryId">@category.Name</a></button>
+                <a class="btn" asp-controller="Home" asp-action="Post" asp-route-categorieId="@category.CategoryId">@category.Name</a>
             }
         </div>
-
-
 
         @* all post *@
         @model List<DemoVolunteer.Models.Post>
@@ -52,7 +49,7 @@
     {
         
         <div class="activity">
-            <img src="@post.ImgURL" width="100px" alt="volunteer">
+            <img src="@post.ImgURL" alt="volunteer" width="100px">
             <h4>@post.Title</h4>
             <p>
                 สถานที่: @post.Location <br>
@@ -63,17 +60,18 @@
             <div>
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <button class="btn join">เข้าร่วม</button>
+                   <div>
+                        <a asp-controller="Post" asp-action="Detail" class="btn join ">เข้าร่วม</a>
+                    </div>
                 }
                 else
                 {
-                    <button><a asp-controller="User" asp-action="Login">เข้าร่วม</a></button>
+                    <div><a class="btn join " asp-controller="User" asp-action="Login">เข้าร่วม</a></div>
                 }
             </div>
         </div>
     }
-}
-            
+}      
 
             @* next pages *@
         </div>
@@ -87,4 +85,7 @@
 
 
 </main>
-    <script src="~/js/index.js"></script>
+
+@* <script src="~/js/index.js"></script>
+<script src="~/js/nav.js" defer></script> *@
+

@@ -1,0 +1,270 @@
+:root {
+    /* Brand / base */
+    --brand: #58A7DF;
+    --brand-dark: #1D6A9A;
+    --accent: #E5BB2F;
+    --bg: #fff;
+    --text: #111;
+    --brand: #58A7DF;
+    --brand-hover: #4a9bd3;
+    --brand-active: #3e8ec7;
+
+    /* ✅ ตัวแปรปุ่มพื้นฐาน (ที่เดิมยังไม่มี) */
+    --btn-bg: #E6E6E6;
+    --btn-bg-hover: #DDDDDD;
+    --btn-bg-active: #D4D4D4;
+    --btn-color: #111;
+    --focus: #58A7DF;
+
+    /* Variants */
+    --btn-yellow: #E5BB2F;
+    --btn-yellow-hover: #D9AD26;
+    --btn-yellow-active: #C69A1F;
+
+    --btn-white: #FFFFFF;
+    --btn-white-hover: #F2F2F2;
+    --btn-white-active: #E6E6E6;
+
+    --btn-blue: #1D6A9A;
+    --btn-blue-hover: #195E89;
+    --btn-blue-active: #144D73;
+
+    --btn-text-dark: #000;
+    --btn-text-light: #fff;
+
+    --btn-join: #4FBE27;
+    --btn-join-hover: #47AD23;
+    --btn-join-active: #3D971D;
+
+    --btn-cancal: #d32f2f;
+    --btn-cancal-hover: #b71c1c;
+    --btn-cancal-active: #860e0e;
+
+}
+
+/* Global sticky footer */
+/* html, body { height: 100%; } */
+
+body {
+    min-height: 100dvh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+    background-color: #faf8f8;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* ปุ่มเข้าร่วม */
+
+.btn--join,
+.btn.join {
+    background: var(--btn-join);
+    color: #fff;
+    border: 1px solid transparent;
+}
+
+.btn--join:hover,
+.btn.join:hover {
+    background: var(--btn-join-hover);
+}
+
+.btn--join:active,
+.btn.join:active {
+    background: var(--btn-join-active);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18);
+}
+
+.btn--cancal,
+.btn.cancal {
+    background: var(--btn-cancal);
+    color: #fff;
+    border: 1px solid transparent;
+}
+.btn--cancal:hover,
+.btn.cancal:hover {
+    background: var(--btn-cancal-hover);
+}
+.btn--cancal:active,
+.btn.cancal:active {
+    background: var(--btn-cancal-hover);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18);
+}
+
+/* สถานะปิดการใช้งาน */
+.btn--join[disabled],
+.btn--join.is-disabled {
+    opacity: .6;
+    pointer-events: none;
+    transform: none;
+    box-shadow: none;
+    filter: none;
+}
+
+/* YELLOW */
+.btn--yellow,
+.btn.bg_yellow {
+    background: var(--btn-yellow);
+    color: var(--btn-text-dark);
+    border: 1px solid rgba(0, 0, 0, .06);
+}
+
+.btn--yellow:hover,
+.btn.bg_yellow:hover {
+    background: var(--btn-yellow-hover);
+}
+
+.btn--yellow:active,
+.btn.bg_yellow:active {
+    background: var(--btn-yellow-active);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18);
+}
+
+/* WHITE */
+.btn--white,
+.btn.bg_white {
+    background: var(--btn-white);
+    color: var(--btn-text-dark);
+    border: 1px solid rgba(0, 0, 0, .08);
+}
+
+.btn--white:hover,
+.btn.bg_white:hover {
+    background: var(--btn-white-hover);
+}
+
+.btn--white:active,
+.btn.bg_white:active {
+    background: var(--btn-white-active);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18);
+}
+
+/* BLUE */
+.btn--blue,
+.btn.bg_blue {
+    background: var(--btn-blue);
+    color: var(--btn-text-light);
+    border: 1px solid rgba(0, 0, 0, .12);
+}
+
+.btn--blue:hover,
+.btn.bg_blue:hover {
+    background: var(--btn-blue-hover);
+}
+
+.btn--blue:active,
+.btn.bg_blue:active {
+    background: var(--btn-blue-active);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    min-height: 36px;
+    padding: 0.75rem 1rem;
+    color: var(--btn-color);
+    background: var(--btn-bg);
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+
+    /* เผื่อใช้กับ <a> */
+    line-height: 1;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, .06), 0 2px 6px rgba(0, 0, 0, .04);
+    transition: transform .08s ease, box-shadow .12s ease, background-color .12s ease, filter .12s ease;
+    text-align: center;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .08);
+    background: var(--btn-bg-hover);
+    filter: brightness(.97);
+}
+
+.btn:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18);
+    background: var(--btn-bg-active);
+    filter: brightness(.95);
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+/* ขนาด/อรรถประโยชน์ */
+.btn--block {
+    width: 100%;
+}
+
+.btn--sm {
+    min-height: 32px;
+    padding: .375rem .75rem;
+    border-radius: 8px;
+}
+
+.btn--lg {
+    min-height: 44px;
+    padding: .625rem 1rem;
+}
+
+/* สถานะถูกเลือก (เช่นปุ่มหมวดหมู่) */
+.btn--selected,
+.selectionbutton {
+    /* alias เก็บของเดิม */
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .10);
+    transform: translateY(1px);
+}
+
+.btn--selected:hover,
+.selectionbutton:hover {
+    background: var(--brand-hover);
+}
+
+.btn--selected:active,
+.selectionbutton:active {
+    background: var(--brand-active);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18);
+}
+/* ===== Global Confirm Modal ===== */
+.confirm-overlay{
+  position: fixed; inset: 0; z-index: 1400;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.45);
+  padding: 16px;
+}
+.confirm-overlay.is-open{ display: flex; }
+
+.confirm-modal{
+  width: min(420px, 96vw);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.20);
+  padding: 16px;
+  display: grid; gap: 12px;
+}
+.confirm-title{ margin: 0; font-weight: 700; }
+.confirm-msg{ margin: 0; color: #444; }
+.confirm-actions{ display: flex; justify-content: flex-end; gap: 8px; }
+@media (max-width: 767.98px) {
+    .activity>div>.btn--join {
+        width: 100%;
+        height: 44px;
+    }
+}

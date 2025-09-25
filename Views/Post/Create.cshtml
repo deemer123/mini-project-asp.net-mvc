@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="~/css/addPost.css" />
 <link rel="stylesheet" href="~/css/style_global.css" />
 
-@* <form method="POST" asp-action="Create" asp-controller="Post" enctype="multipart/form-data">
+<form method="POST" asp-action="Create" asp-controller="Post" enctype="multipart/form-data">
     <h1>เพิ่มโพสต์กิจกรรมจิตอาสา</h1>
 
     <label for="img">อัปโหลดรูปภาพ:</label>
@@ -52,9 +52,9 @@
     <input asp-for="AppointmentDateEnd" type="date" id="AppointmentDateEnd" name="AppointmentDateEnd" required />
 
     <button type="submit" formnovalidate>สร้างโพส</button>
-</form> *@
+</form>
 
-
+@* 
 <main>
     <div class="content">
         <div class="container">
@@ -107,11 +107,11 @@
 
                 <div>
                     <label>ประเภทกิจกรรม</label>
-                    <select name="activityType">
-                        <option value="">-- เลือกประเภท --</option>
-                        <option value="สิ่งแวดล้อม">สิ่งแวดล้อม</option>
-                        <option value="การศึกษา">การศึกษา</option>
-                        <option value="ชุมชน">ชุมชน</option>
+                    <select asp-for="CategoryId" name="CategoryId">
+                        @foreach (var category in @ViewBag.Categories)
+                        {
+                            <option value="@category.CategoryId">@category.Name</option>
+                        }
                     </select>
                 </div>
 
@@ -151,11 +151,11 @@
                 <button type="submit" class="submit-btn">เพิ่มโพสต์กิจกรรม</button>
             </form>
         </div>
-</main>
+</main> *@
 
 
 
-<script>
+@* <script>
     const imageInput = document.getElementById('imageInput');
     const preview = document.getElementById('preview');
 
@@ -172,4 +172,6 @@
             reader.readAsDataURL(file);
         }
     });
-</script>
+</script> *@
+
+<script src="~/js/post_choose_file.js"></script>
