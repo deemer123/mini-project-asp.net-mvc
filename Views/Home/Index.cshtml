@@ -26,17 +26,20 @@
             <h2 class="title2">กิจกรรมจิตอาสาที่เปิดรับ</h2>
             <hr class="line">
         </div>
-        <!-- for search -->
+        <!-- for search --> 
+        <form asp-action="Search" asp-controller="Home" method="get">
         <div class="search-container">
-                <input type="text" placeholder="ค้นหางานกิจกรรม" class="search-input" />
-                <button class="btn bg_blue">ค้นหา</button>
-            </div>
+                <input type="text" placeholder="ค้นหางานกิจกรรม" class="search-input" name="keyword" id="keyword" placeholder="ค้นหากิจกรรม"/>
+                <button class="btn bg_blue" type="submit">ค้นหา</button>
+        </div>
+        </form>
+
         <!-- for select activity -->
 
         <div class="selectbutton">
             @foreach (var category in @ViewBag.Categories)
-            {
-                <a class="btn" asp-controller="Home" asp-action="Post" asp-route-categorieId="@category.CategoryId">@category.Name</a>
+            {   //แก้ไขการ filter ตามหมวดหมู่
+                <a class="btn" asp-controller="Home" asp-action="Index" asp-route-categorieId="@category.CategoryId">@category.Name</a>
             }
         </div>
 
