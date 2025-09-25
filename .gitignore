@@ -63,3 +63,5 @@ publish/
 *.jpg
 *.png
 
+
+mydb.db*

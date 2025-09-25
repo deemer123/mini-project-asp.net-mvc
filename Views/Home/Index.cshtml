@@ -61,7 +61,7 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                    <div>
-                        <a asp-controller="Post" asp-action="Detail" class="btn join ">เข้าร่วม</a>
+                        <a asp-controller="Post" asp-action="Detail" asp-route-postId="@post.PostId" class="btn join ">เข้าร่วม</a>
                     </div>
                 }
                 else

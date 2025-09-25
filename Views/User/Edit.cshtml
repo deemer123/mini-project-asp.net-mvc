@@ -50,7 +50,7 @@
             <form asp-controller="User" asp-action="Edit" method="post" enctype="multipart/form-data">
                 <!-- รูปโปรไฟล์อยู่ในฟอร์มแล้ว และคลิกได้ -->
                 <div class="pic" id="avatar" role="button" tabindex="0" aria-label="เปลี่ยนรูปโปรไฟล์">
-                    <img id="avatarImg" src="@Model.ImgURL" alt="รูปโปรไฟล์">
+                    <img id="avatarImg" src="@Model.ImgURL">
                 </div>
                 <input type="hidden" name="avatarUrl" id="avatarUrlHidden">
                 <div>

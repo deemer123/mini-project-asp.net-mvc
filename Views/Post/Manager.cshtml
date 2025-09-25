@@ -67,8 +67,8 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>@post.CreatedAt</td>
-                                    <td><a href="#">@post.Title.</a></td>
+                                    <td>@post.CreatedAt.ToString()</td>
+                                    <td><a asp-controller="Post" asp-action="Detail"asp-route-postId="@post.PostId">@post.Title.</a></td>
                                     <td>@post.AmountParticipant / @post.MaxParticipants คน</td>
                                     <td><a class="btn view-members" asp-controller="Post" asp-action="PostJoinList"  asp-route-postId="@post.PostId"
                                             data-href="viewmember.html">ดูสมาชิก</a></td>

@@ -1,0 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+* {
+  margin: 0%;
+  font-family: "Inter", sans-serif;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  padding: 0 2rem;
+  background-color: #c4c4c4;
+}
+
+.content-1 {
+  max-width: 1100px;
+  width: 100%;
+  padding: 2rem 1rem;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  height: auto;
+}
+
+.layer-1 {
+  padding-left: 100px;
+  display: flex;
+  justify-content: start;
+  gap: 20px;
+}
+
+.layer-1 .description {
+  align-content: center;
+}
+
+.layer-1 .description h2 {
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
+.layer-1 .description p {
+  margin: 5px 0;
+}
+
+/* ป้ายชั่วโมง (ชิปสีน้ำเงินอ่อน) = p ตัวสุดท้ายในบล็อกคำอธิบาย */
+.layer-1 .description p:last-of-type {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #E9F3FF;
+  color: #2E7CF3;
+  font-weight: 700;
+}
+
+.profile {
+  --avatar-size: 200px;
+}
+
+.profile img {
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  border-radius: 50%;
+  object-fit: cover;
+  background: #f0f0f0;
+  border: 4px solid #FFCB1F;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+
+}
+.layer-2>table {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+table {
+  width: 90%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-left: 50px;
+}
+
+
+th,
+td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background-color: #0078D4;
+  color: white;
+}
+
+td.status_activity.wait {
+  color: #0078D4;
+  font-weight: bold;
+}
+td.status_activity.done {
+  color: #34cc4e;
+  font-weight: bold;
+
+}
+
+
+.headtable {
+  background-color: white;
+  color: #2280EB;
+  font-size: 1.5rem;
+  font-weight: 400;
+  text-align: left;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+
+@media (max-width: 1024px) {
+  main {
+    background: #fff;
+    padding: 0;
+  }
+}
+
+@media (max-width: 767.99px) {
+  .layer-1 {
+    display: grid;
+    padding-left: 0px;
+    /* คุมเลย์เอาต์ที่หัวโปรไฟล์ */
+    grid-template-columns: 1fr;
+    /* มีคอลัมน์เดียว = เรียงลง */
+    grid-auto-flow: row;
+    justify-items: center;
+    gap: 8px;
+  }
+
+  .layer-1 .description {
+    order: 2;
+    /* รายละเอียดตามหลังรูป */
+    width: 100%;
+    text-align: center;
+  }
+  .layer-2{
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .layer-2 > table{
+    min-width: 640px;     /* กันคอลัมน์อัดจนอ่านไม่ออก */
+    width: 100%;
+    margin: 12px 0;
+    margin-left: 0;       /* ลบ margin-left:50px เดิม */
+  }
+
+
+}
