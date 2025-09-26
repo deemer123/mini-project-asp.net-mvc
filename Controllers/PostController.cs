@@ -83,9 +83,9 @@ namespace MyMvcProject.Controllers
             else
             {
                 //กรณีไม่ได้กำหนดรูปภาพ
-                model.ImgURL = "https://images.unsplash.com/photo-1757252800867-2e78e08a6d53?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDEyfGJvOGpRS1RhRTBZfHxlbnwwfHx8fHw%3D";
+                model.ImgURL = null;
             }
-
+            // คำนวน จำนวนชั่วโมงกิจกรรม
             DateTime? date1 = model.AppointmentDate;
             DateTime? date2 = model.AppointmentDateArrive;
 
@@ -168,15 +168,15 @@ namespace MyMvcProject.Controllers
 
         // ดำเนินการแก้ไขข้อมูล post
         [HttpPost]
-        public async Task<IActionResult> Edit(Post model, IFormFile imageFile, IFormFile imageFile2)
+        public async Task<IActionResult> Edit(Post model, IFormFile? imageFile, IFormFile? imageFile2)
         {
             var user = await _userManager.GetUserAsync(User);
             var post = await _context.Posts.FindAsync(model.PostId); // ดึงรายการเดียวตาม PostId
-
             if (model == null || user == null)
             {
                 return Content("Model is null");
             }
+            
             // ถ้ามีการแก้ไขภาพเข้ารวมกิจกรรม
             if (imageFile2 != null && imageFile2.Length > 0)
             {
@@ -188,13 +188,23 @@ namespace MyMvcProject.Controllers
                 }
                 model.AppointImg = "/img/" + fileName2; // สมมุติว่ามี field นี้ใน Model
             }
-            else
-            {
-                model.AppointImg = null;
-            }
+
             // ถ้ามีการแก้ไขภาพกิจกรรม
-            if (imageFile != null && imageFile.Length > 0)
+            if (imageFile != null && imageFile.Length > 0 && post.ImgURL != null)
             {
+                // ตั้งชื่อไฟล์
+                string[] arrayPath = post.ImgURL.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                var FileName = arrayPath[1];
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", FileName);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+                // กำหนด ImgURL ใน Model เป็น path สำหรับแสดงภาพ
+                model.ImgURL = "/img/" + FileName;
+                Console.WriteLine("เปลี่ยนภาพ");
+            } else if (imageFile != null && imageFile.Length > 0 && post.ImgURL == null) {
+
                 // ตั้งชื่อไฟล์เอง เช่น ใช้ชื่อจาก Model หรือเวลาปัจจุบัน
                 var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                 var customFileName = $"{user.Id}_" + timestamp + Path.GetExtension(imageFile.FileName);
@@ -207,11 +217,28 @@ namespace MyMvcProject.Controllers
                 model.ImgURL = "/img/" + customFileName;
                 Console.WriteLine("เปลี่ยนภาพ");
             }
-            else
+            // คำนวน จำนวนชั่วโมงกิจกรรม
+            DateTime? date1 = model.AppointmentDate;
+            DateTime? date2 = model.AppointmentDateArrive;
+
+            DateTime? time1 = model.TimeStart;
+            DateTime? time2 = model.TimeEnd;
+            double totalDays = 0;
+            double totalHours = 0;
+
+            if (date1.HasValue && date2.HasValue)
             {
-                Console.WriteLine("ไม่เปลี่ยนภาพ");
-                model.ImgURL = post.ImgURL;
+                TimeSpan duration = date2.Value - date1.Value;
+                totalDays = duration.TotalDays + 1;
             }
+            if (time1.HasValue && time2.HasValue)
+            {
+                TimeSpan duration = time2.Value - time1.Value;
+                totalHours = duration.TotalHours;
+            }
+            double score = totalDays * totalHours;
+            int Score = Convert.ToInt32(score);
+
             // อัปเดตค่าจากฟอร์ม
             post.Title = model.Title;
             post.CategoryId = model.CategoryId;
@@ -219,14 +246,22 @@ namespace MyMvcProject.Controllers
             post.MaxParticipants = model.MaxParticipants;
             post.Description = model.Description;
             post.AppointmentDate = model.AppointmentDate;
+            post.AppointmentDateArrive = model.AppointmentDateArrive;
             post.TimeStart = model.TimeStart;
             post.TimeEnd = model.TimeEnd;
-            post.Score = model.Score;
-            post.ImgURL = model.ImgURL;
-            post.AppointImg = model.AppointImg;
+            post.Score = Score;
             post.AppointmentDateEnd = model.AppointmentDateEnd;
-            await _context.SaveChangesAsync();
             
+            if (imageFile != null)
+            {
+                post.ImgURL = model.ImgURL;
+            }
+            if (imageFile2 != null) {
+                post.AppointImg = model.AppointImg;
+            }
+
+            await _context.SaveChangesAsync();
+
             // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
             TempData["PopupMessage"] = $"แก้ไขโพสตแล้ว!!";
             TempData["PopupType"] = "success"; // success, error, inf

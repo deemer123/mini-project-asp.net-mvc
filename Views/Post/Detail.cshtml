@@ -26,13 +26,19 @@
     <div class="content">
         <div class="main-layer">
             <div class="l1">
-                <img src="@Model.ImgURL" alt="img">
+                @* <img src="@Model.ImgURL" alt="img"> *@
+                @if(Model.ImgURL != null){
+                    <img src="@Model.ImgURL" alt="img">
+                }else{
+                    <img src="~/img/default-post-pic.jpg" alt="img">
+                }
             </div>
             <div class="l2">
                 <div class="text">
                     <h2>@Model.Title</h2>
                     <p><span class="hightlight">สถานที่:</span> @Model.Location</p>
-                    <p><span class="hl-black">เวลาจัดกิจกรรม :</span> @Model.AppointmentDate ถึง @Model.AppointmentDateArrive 
+                    <p><span class="hl-black">เวลาจัดกิจกรรม :</span> @Model.AppointmentDate.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("th-TH")) 
+                        ถึง @Model.AppointmentDateArrive?.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("th-TH")) 
                     เวลา @Model.TimeStart.ToString("hh:mm tt") - @Model.TimeStart.ToString("hh:mm tt")</p>
                     <p><span class="hl-black">ได้รับชั่วโมงกิจกรรม :</span> <span class="hl-blue">@Model.Score</span></p>
                     <p><span class="hl-black">ประเภทกิจกรรม :</span> @Model.Category.Name</p>
