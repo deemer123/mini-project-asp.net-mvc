@@ -2,81 +2,64 @@
 @{
     ViewData["Title"] = "Edit";
 }
-<link rel="stylesheet" href="~/css/profileEdit.css" />
-
-@* 
-<form asp-controller="User" asp-action="Edit" method="post" enctype="multipart/form-data">
-
-
-    <label for="img">อัปเดตโปรไฟล</label>
-    <input type="file" id="imageInput" accept="image/*" name="imageFile" />
-    <img id="preview" src=@Model.ImgURL alt="ImageProfile" width="200" style="display: block;">
-
-    <div>
-        <label asp-for="FirstName">FirstName</label>
-        <input value="@Model.FirstName" asp-for="FirstName" />
-    </div>
-    <div>
-        <label asp-for="LastName">LastName</label>
-        <input value="@Model.LastName" asp-for="LastName" />
-    </div>
-    <div>
-        <input type="radio" id="male" name="gender" value="male" asp-for="Gender" checked />
-        <label asp-for="Gender" for="male">male</label>
-        <input type="radio" id="female" name="gender" value="female" asp-for="Gender" />
-        <label asp-for="Gender" for="female">female</label>
-    </div>
-    <div>
-        <label asp-for="Email">Email</label>
-        <input value="@Model.Email" asp-for="Email" readonly="true" />
-    </div>
-    <div>
-        <label asp-for="UserName">UserName</label>
-        <input value="@Model.UserName" asp-for="UserName" readonly="true" />
-    </div>
-    <div>
-        <label asp-for="PhoneNumber">PhoneNumber</label>
-        <input value="@Model.PhoneNumber" asp-for="PhoneNumber" />
-    </div>
-
-    <button type="submit">Save</button>
-</form> *@
+<link rel="stylesheet" href="~/css/profileEdit.css"/>
+<link rel="stylesheet" href="~/css/style_global.css">
 
 
 <main>
     <div class="content">
         <div class="edit">
 
-            <form asp-controller="User" asp-action="Edit" method="post" enctype="multipart/form-data">
-                <!-- รูปโปรไฟล์อยู่ในฟอร์มแล้ว และคลิกได้ -->
+            <form class="profile-form" asp-controller="User" asp-action="Edit" method="POST" enctype="multipart/form-data">
+                    <!-- รูปโปรไฟล์อยู่ในฟอร์มแล้ว และคลิกได้ -->
                 <div class="pic" id="avatar" role="button" tabindex="0" aria-label="เปลี่ยนรูปโปรไฟล์">
-                    <img id="avatarImg" src="@Model.ImgURL" alt="รูปโปรไฟล์">
+                    <img id="avatarImg"
+                        src="@Model.ImgURL"
+                        alt="รูปโปรไฟล์">
                 </div>
-                <input type="hidden" name="avatarUrl" id="avatarUrlHidden">
+                <!-- Overlay สำหรับใส่ URL รูปใหม่ -->
+                <div class="avatar-overlay" id="avatarOverlay" hidden>
+                    <div class="avatar-modal" role="dialog" aria-modal="true" aria-labelledby="avatarTitle">
+                        <h3 id="avatarTitle">เปลี่ยนรูปโปรไฟล์</h3>
+                        <p class="avatar-hint">เลือกไฟล์จากเครื่องของคุณ </p>
+
+                        <img id="avatarPreview" alt="ตัวอย่างรูป" />
+
+                        <div class="avatar-input">
+                            <input type="file" id="avatarFile" accept="image/*" name="imageFile"/>
+                            <!-- <input type="url" id="avatarUrl" placeholder="https://example.com/photo.jpg" inputmode="url" /> -->
+                        </div>
+
+                        <p class="avatar-error" id="avatarError" aria-live="polite"></p>
+
+                        <div class="avatar-actions">
+                            <button type="button" class="btn btn--white" id="avatarCancel">ยกเลิก</button>
+                            <button type="button" class="btn bg_blue" id="avatarConfirm">ยืนยัน</button>
+                        </div>
+                    </div>
+                </div>
+                <input type="file" name="imageFile" id="avatarUrlHidden" accept="image/*"  hidden>
                 <div>
                     <h1 class="title">แก้ไขข้อมูลส่วนตัว</h1>
                 </div>
-
                 <div class="name">
-                    <input value="@Model.FirstName" asp-for="FirstName" type="text" id="fname" name="firstname"
-                        placeholder="ชื่อ">
-                    <input value="@Model.LastName" asp-for="LastName" type="text" id="Lastname" name="lastname"
-                        placeholder="นามสกุล">
+                    <input value="@Model.FirstName" asp-for="FirstName" type="text" id="fname" name="FirstName" placeholder="ชื่อ">
+                    <input value="@Model.LastName" asp-for="LastName" type="text" id="Lastname" name="LastName" placeholder="นามสกุล">
                 </div>
 
                 <div class="gender">
                     <p>เพศ:</p>
-                    <input type="radio" id="male" name="gender" value="male" asp-for="Gender" checked>
+                    <input type="radio" id="male" name="Gender" value="male" asp-for="Gender" checked>
                     <label asp-for="Gender" for="male">ชาย</label>
-                    <input type="radio" id="female" name="gender" value="female" asp-for="Gender">
+                    <input type="radio" id="female" name="Gender" value="female" asp-for="Gender">
                     <label asp-for="Gender" for="female">หญิง</label>
                 </div>
 
-                <div class="email"><input value="@Model.Email" asp-for="Email" type="email" name="email" id="email"
-                        placeholder="อีเมล" disabled readonly="true"></div>
-                <div class="password"><input value="@Model.UserName" asp-for="UserName" type="password" name="password"
-                        id="password" placeholder="รหัสผ่าน" disabled readonly="true"></div>
-                <div class="tel"><input value="@Model.PhoneNumber" asp-for="PhoneNumber" type="tel" name="tel" id="tel"
+                <div class="email"><input value="@Model.Email" asp-for="Email" type="email" id="email"
+                        placeholder="อีเมล" readonly="true"></div>
+                <div class="password"><input value="@Model.UserName" asp-for="UserName" type="password" 
+                        id="password" placeholder="รหัสผ่าน" readonly="true"></div>
+                <div class="tel"><input value="@Model.PhoneNumber" asp-for="PhoneNumber" type="tel" id="tel"
                         placeholder="เบอร์โทรติดต่อ"></div>
 
                 <div class="submit">
@@ -87,47 +70,7 @@
         </div>
     </div>
 </main>
-<!-- Overlay สำหรับใส่ URL รูปใหม่ -->
-<div class="avatar-overlay" id="avatarOverlay" hidden>
-    <div class="avatar-modal" role="dialog" aria-modal="true" aria-labelledby="avatarTitle">
-        <h3 id="avatarTitle">เปลี่ยนรูปโปรไฟล์</h3>
-        <p class="avatar-hint">เลือกไฟล์จากเครื่องของคุณ </p>
 
-        <img id="avatarPreview" alt="ตัวอย่างรูป" />
-
-        <div class="avatar-input">
-            <input type="file" id="avatarFile" accept="image/*" />
-            <!-- <input type="url" id="avatarUrl" placeholder="https://example.com/photo.jpg" inputmode="url" /> -->
-        </div>
-
-        <p class="avatar-error" id="avatarError" aria-live="polite"></p>
-
-        <div class="avatar-actions">
-            <button type="button" class="btn btn--white" id="avatarCancel">ยกเลิก</button>
-            <button type="button" class="btn bg_blue" id="avatarConfirm">ยืนยัน</button>
-        </div>
-    </div>
-</div>
-
-
-
-@* <script>
-    const imageInput = document.getElementById('imageInput');
-    const preview = document.getElementById('preview');
-
-    imageInput.addEventListener('change', function () {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            }
-
-            reader.readAsDataURL(file);
-        }
-    });
-</script> *@
-
+    
 <script src="~/js/profileEdit.js"></script>
+<script src="~/js/index.js"></script>

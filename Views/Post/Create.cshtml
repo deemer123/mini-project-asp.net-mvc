@@ -1,177 +1,107 @@
+@{
+    ViewData["Title"] = "Addpost";
+}
 @model DemoVolunteer.Models.Post
-<link rel="stylesheet" href="~/css/addPost.css" />
-<link rel="stylesheet" href="~/css/style_global.css" />
 
-<form method="POST" asp-action="Create" asp-controller="Post" enctype="multipart/form-data">
-    <h1>เพิ่มโพสต์กิจกรรมจิตอาสา</h1>
+<link rel="stylesheet" href="~/css/addpost.css">
+<link rel="stylesheet" href="~/css/style_global.css">
+<link rel="icon" href="https://s.imgz.io/2025/09/08/download-1f4108ab663ec19eb.png" type="image/png">
 
-    <label for="img">อัปโหลดรูปภาพ:</label>
-    <input type="file" id="imageInput" accept="image/*" name="imageFile" />
-    <img id="preview" src="/img/default-post-image.png" alt="Image Preview" width="500" height="600"
-        style="display: block;">
-
-    <label for="title">ชื่อหัวเรือง</label>
-    <input asp-for="Title" type="text" name="title" placeholder="title" required />
-
-    <label for="CategoryId">เลือกประเภท:</label>
-    <select asp-for="CategoryId" name="CategoryId">
-        @foreach (var category in @ViewBag.Categories)
-        {
-            <option value="@category.CategoryId">@category.Name</option>
-        }
-    </select>
-
-    <label for="location">สถาที่นัดหมาย:</label>
-    <input asp-for="Location" type="text" name="Location" placeholder="Location" required />
-
-    <label for="category">จำนวนที่รับ:</label>
-    <input asp-for="MaxParticipants" type="number" name="MaxParticipants" placeholder="MaxParticipants" required />
-
-    <label for="Description">ลายละเอียด:</label>
-    <textarea asp-for="Description" placeholder="textarea"></textarea>
-
-    <label for="date">วันที่นัด:</label>
-    <input asp-for="AppointmentDate" type="date" id="AppointmentDate" name="AppointmentDate" required />
-
-    <label for="TimeStart">เริ่มเวลา:</label>
-    <input asp-for="TimeStart" type="time" name="TimeStart" required />
-
-    <label for="TimeEnd">จบที่เวลา:</label>
-    <input asp-for="TimeEnd" type="time" name="TimeEnd" required />
-
-    <label for="score">จำนวนชั่วโมง:</label>
-    <input asp-for="Score" type="number" name="score" placeholder="score" required />
-
-    <hr />
-
-
-    <label for="img">อัปโหลดรูปภาพกิจกรรม:</label>
-    <input type="file" accept="image/*" name="imageFile2" />
-
-    <label for="dateEnd">เวลาปิดโพสต์กิจกรรม:</label>
-    <input asp-for="AppointmentDateEnd" type="date" id="AppointmentDateEnd" name="AppointmentDateEnd" required />
-
-    <button type="submit" formnovalidate>สร้างโพส</button>
-</form>
-
-@* 
 <main>
     <div class="content">
         <div class="container">
-
             <h2>เพิ่มโพสต์กิจกรรมจิตอาสา</h2>
-
             <!-- <div class="img">
-                    <img src="https://images.unsplash.com/photo-1757252800867-2e78e08a6d53?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDEyfGJvOGpRS1RhRTBZfHxlbnwwfHx8fHw%3D"
-                        alt="">
-                </div> -->
+                <img src="https://images.unsplash.com/photo-1757252800867-2e78e08a6d53?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDEyfGJvOGpRS1RhRTBZfHxlbnwwfHx8fHw%3D"
+                    alt="">
+            </div> -->
             <div class="addpost-image-container">
                 <img src="https://images.unsplash.com/photo-1757252800867-2e78e08a6d53?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDEyfGJvOGpRS1RhRTBZfHxlbnwwfHx8fHw%3D"
                     class="addpost-image" alt="กิจกรรม">
                 <button class="edit-button" aria-label="แก้ไขภาพ">✎</button>
             </div>
-            <div class="activity_img-overlay" id="activity_imgOverlay" hidden>
-                <div class="activity_img-modal" role="dialog" aria-modal="true" aria-labelledby="activity_imgTitle">
-                    <h3 id="activity_imgTitle">เลือกภาพกิจกรรม</h3>
-                    <p class="activity_img-hint">เลือกไฟล์รูปภาพจากเครื่องของคุณ</p>
+            
+        <form method="POST" asp-action="Create" asp-controller="Post" enctype="multipart/form-data">
+                <div class="activity_img-overlay" id="activity_imgOverlay" hidden>
+                    <div class="activity_img-modal" role="dialog" aria-modal="true" aria-labelledby="activity_imgTitle">
+                        <h3 id="activity_imgTitle">เลือกภาพกิจกรรม</h3>
+                        <p class="activity_img-hint">เลือกไฟล์รูปภาพจากเครื่องของคุณ</p>
 
-                    <div class="activity_img-input">
-                        <input type="file" id="activity_imgFile" accept="image/*" />
-                    </div>
+                        <div class="activity_img-input">
+                            <input type="file" id="activity_imgFile" accept="image/*" name="imageFile"/>
+                        </div>
 
-                    <p class="activity_img-error" id="activity_imgError" aria-live="polite"></p>
+                        <p class="activity_img-error" id="activity_imgError" aria-live="polite"></p>
 
-                    <div class="activity_img-actions">
-                        <button type="button" class="btn" id="activity_imgCancel">ยกเลิก</button>
-                        <button type="button" class="btn bg_blue" id="activity_imgConfirm">ยืนยัน</button>
+                        <div class="activity_img-actions">
+                            <button type="button" class="btn" id="activity_imgCancel">ยกเลิก</button>
+                            <button type="button" class="btn bg_blue" id="activity_imgConfirm">ยืนยัน</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-
-            <form method="POST" asp-action="Create" asp-controller="Post" enctype="multipart/form-data">
                 <div>
                     <label>ชื่อกิจกรรมจิตอาสา</label>
-                    <input type="text" name="activityName">
+                    <input asp-for="Title" type="text" name="Title">
                 </div>
 
                 <div>
-                    <label>จำนวนผู้งานเข้าร่วม</label>
-                    <input type="number" name="participantCount" min="1" value="1">
+                    <label>กำหนดจำนวนผู้เข้าร่วม</label>
+                    <input asp-for="MaxParticipants" type="number" name="MaxParticipants" min="1" value="1">
                 </div>
 
                 <div class="full-width">
                     <label>สถานที่จัดกิจกรรมจิตอาสา</label>
-                    <input type="text" name="location">
+                    <input asp-for="Location" type="text" name="Location">
                 </div>
 
                 <div>
                     <label>ประเภทกิจกรรม</label>
                     <select asp-for="CategoryId" name="CategoryId">
-                        @foreach (var category in @ViewBag.Categories)
-                        {
-                            <option value="@category.CategoryId">@category.Name</option>
-                        }
+                        <option value="">-- เลือกประเภท --</option>
+                        @foreach (var category in @ViewBag.Categories){
+                            <option  value="@category.CategoryId">@category.Name</option>
+                        }   
                     </select>
                 </div>
 
                 <div>
-                    <label>วัน / เวลาเริ่มต้น</label>
+                    <label>วันที่จัดกิจกรรม</label>
                     <div class="datetime-wrapper">
-                        <input type="date" name="startDate" class="start-date">
-                        <input type="time" name="startTime" class="start-time">
+                        <input asp-for="AppointmentDate" type="date" name="AppointmentDate" class="start-date">
+                        <p>ถึง</p>
+                        <input asp-for="AppointmentDateArrive" type="date" name="AppointmentDateArrive" class="end-date">
                     </div>
                 </div>
                 <div>
-                    <label>วัน / เวลาสิ้นสุด</label>
+                    <label>ระยะเวลากิจกรรม</label>
                     <div class="datetime-wrapper">
-                        <input type="date" name="endDate" class="end-date">
-                        <input type="time" name="endTime" class="end-time">
+                        <input asp-for="TimeStart" type="time" name="TimeStart" class="start-time">
+                        <p>ถึง</p>
+                        <input asp-for="TimeEnd" type="time" name="TimeEnd" class="end-time">
                     </div>
                 </div>
 
                 <div class="full-width">
                     <label>รายละเอียดกิจกรรม</label>
-                    <textarea name="details"></textarea>
+                    <textarea asp-for="Description" name="Description"></textarea>
                 </div>
 
                 <div class="full-width">
                     <label>รูปภาพกิจกรรม</label>
-                    <input type="file" name="image">
+                    <input type="file" accept="image/*" name="imageFile2">
                 </div>
 
                 <div class="full-width">
                     <label>เวลาปิดโพสต์กิจกรรม</label>
                     <div class="datetime-wrapper">
-                        <input type="date" name="closeDate" class="close-date">
-                        <input type="time" name="closeTime" class="close-time">
+                        <input asp-for="AppointmentDateEnd" type="datetime-local" name="AppointmentDateEnd" class="close-date">
+                        @* <input type="time" name="closeTime" class="close-time"> *@
                     </div>
                 </div>
 
                 <button type="submit" class="submit-btn">เพิ่มโพสต์กิจกรรม</button>
-            </form>
-        </div>
-</main> *@
+        </form>
+    </div>
+    <script src="~/js/post_choose_file.js"></script>
+</main>
 
-
-
-@* <script>
-    const imageInput = document.getElementById('imageInput');
-    const preview = document.getElementById('preview');
-
-    imageInput.addEventListener('change', function () {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            }
-
-            reader.readAsDataURL(file);
-        }
-    });
-</script> *@
-
-<script src="~/js/post_choose_file.js"></script>

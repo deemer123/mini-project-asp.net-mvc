@@ -60,6 +60,6 @@ Desktop.ini
 # Ignore publish output
 publish/
 
-*.jpg
-*.png
+# *.jpg
+# *.png
 

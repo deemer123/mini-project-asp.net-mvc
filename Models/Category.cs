@@ -11,8 +11,6 @@ namespace DemoVolunteer.Models
         
         public string? Name { get; set; }
         
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-        
         public bool IsActive { get; set; } = true;
 
         // Navigation property

@@ -46,7 +46,8 @@ namespace DemoVolunteer.Models
 
         // เพิ่ม field ใหม่
         public DateTime? CreatedAt { get; set; }
-        public DateTime? AppointmentDateEnd { get; set; }   // เลือกวันที่จัดวันสุดท้าย
-        public string? AppointImg{ get; set; }   // เลือกรูปเข้ารวมกิจกรรม
+        public DateTime? AppointmentDateEnd { get; set; }  //วันปิด post
+        public string? AppointImg { get; set; }   // เลือกรูปเข้ารวมกิจกรรม
+        public DateTime? AppointmentDateArrive { get; set; } // เลือกวันที่จัดกิจกกรรมวันสุดท้าย
     }
 }

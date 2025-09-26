@@ -83,28 +83,50 @@ namespace MyMvcProject.Controllers
             else
             {
                 //กรณีไม่ได้กำหนดรูปภาพ
-                model.ImgURL = "/img/default-post-image.png";
+                model.ImgURL = "https://images.unsplash.com/photo-1757252800867-2e78e08a6d53?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDEyfGJvOGpRS1RhRTBZfHxlbnwwfHx8fHw%3D";
             }
+
+            DateTime? date1 = model.AppointmentDate;
+            DateTime? date2 = model.AppointmentDateArrive;
+
+            DateTime? time1 = model.TimeStart;
+            DateTime? time2 = model.TimeEnd;
+            double totalDays = 0;
+            double totalHours = 0;
+
+            if (date1.HasValue && date2.HasValue)
+            {
+                TimeSpan duration = date2.Value - date1.Value;
+                totalDays = duration.TotalDays + 1;
+            }
+            if (time1.HasValue && time2.HasValue)
+            {
+                TimeSpan duration = time2.Value - time1.Value;
+                totalHours = duration.TotalHours;
+            }
+            double score = totalDays * totalHours;
+            model.Score = Convert.ToInt32(score);
             // บันทึก model ลง DB หรือทำงานต่อ
             var newPost = new Post
             {
                 Title = model.Title,
-                OwnerId = user.Id,
-                CategoryId = model.CategoryId,
-                Description = model.Description,
-                Location = model.Location,
                 MaxParticipants = model.MaxParticipants,
+                Location = model.Location,
+                CategoryId = model.CategoryId,
+                OwnerId = user.Id,
                 AppointmentDate = model.AppointmentDate,
+                AppointmentDateArrive = model.AppointmentDateArrive,
                 TimeStart = model.TimeStart,
                 TimeEnd = model.TimeEnd,
+                Description = model.Description,
+                AppointImg = model.AppointImg,
+                AppointmentDateEnd = model.AppointmentDateEnd,
                 Score = model.Score,
                 Status = "Open",
                 ImgURL = model.ImgURL,
-                AppointImg = model.AppointImg,
-                AppointmentDateEnd = model.AppointmentDateEnd,
                 CreatedAt = DateTime.Now
             };
-            
+
             // var json = JsonSerializer.Serialize(newPost);
             // Console.WriteLine(json); // หรือ Debug.WriteLine(json);
 
@@ -131,11 +153,7 @@ namespace MyMvcProject.Controllers
             var joins = await _context.Joins
                 .Where(p => p.PostId == postId)
                 .ToListAsync();
-            if (joins.Count == post.MaxParticipants) 
-            {
-                post.Status = "Full";
-                await _context.SaveChangesAsync();
-            }
+                
             return View(post);
         }
 
@@ -209,9 +227,6 @@ namespace MyMvcProject.Controllers
             post.AppointmentDateEnd = model.AppointmentDateEnd;
             await _context.SaveChangesAsync();
             
-
-            Console.WriteLine($"วันที่ที่รับมา: {model.AppointmentDate}");
-            Console.WriteLine($"วันที่ปิดที่รับมา: {model.AppointmentDateEnd}");
             // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
             TempData["PopupMessage"] = $"แก้ไขโพสตแล้ว!!";
             TempData["PopupType"] = "success"; // success, error, inf

@@ -1,10 +1,9 @@
-// === เปลี่ยนรูปโปรไฟล์ด้วย URL และส่งค่าไปกับฟอร์ม ===
 (function(){
   const pic = document.getElementById('avatar');
   const avatarImg = document.getElementById('avatarImg');
 
   const overlay = document.getElementById('avatarOverlay');
-  const urlInput = document.getElementById('avatarUrl');
+  const fileInput = document.getElementById('avatarFile');  // เปลี่ยนเป็น input file
   const preview  = document.getElementById('avatarPreview');
   const err      = document.getElementById('avatarError');
   const btnOk    = document.getElementById('avatarConfirm');
@@ -20,10 +19,11 @@
   const open = () => {
     overlay.hidden = false;
     err.textContent = '';
-    urlInput.value = '';
+    fileInput.value = '';  // รีเซ็ตค่าไฟล์
     preview.src = avatarImg.src; // แสดงตัวอย่างเป็นรูปเดิมก่อน
-    setTimeout(()=> urlInput.focus(), 0);
+    setTimeout(()=> fileInput.focus(), 0);
   };
+
   const close = () => { overlay.hidden = true; };
 
   pic.addEventListener('click', open);
@@ -33,38 +33,43 @@
     }
   });
 
-  urlInput.addEventListener('input', ()=>{
-    const v = urlInput.value.trim();
-    preview.src = v || avatarImg.src;
-    err.textContent = '';
+  fileInput.addEventListener('change', function() {
+    const file = fileInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+      };
+      reader.onerror = () => {
+        err.textContent = 'ไม่สามารถโหลดไฟล์ได้';
+      };
+      reader.readAsDataURL(file);
+    }
   });
 
-  function applyUrl(){
-    const v = urlInput.value.trim();
+  function applyFile(){
+    const file = fileInput.files[0];
+    if (!file) { close(); return; }
 
-    // ถ้าไม่กรอกอะไรเลย: ใช้ค่าเดิม/ค่า default (แค่ปิดกล่อง)
-    if(!v){ close(); return; }
-
-    // ทดสอบโหลดก่อน ค่อยอัปเดตจริง
-    const test = new Image();
-    test.onload = () => {
-      avatarImg.src = v;     // เปลี่ยนรูปที่แสดง
-      hidden.value  = v;     // ⬅️ อัปเดตค่าที่จะส่งไปกับฟอร์ม
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      avatarImg.src = e.target.result;   // เปลี่ยนรูปที่แสดง
+      hidden.value  = e.target.result;   // ⬅️ อัปเดตค่าที่จะส่งไปกับฟอร์ม
       close();
     };
-    test.onerror = () => {
-      err.textContent = 'โหลดรูปไม่สำเร็จ ตรวจสอบ URL อีกครั้ง';
+    reader.onerror = () => {
+      err.textContent = 'ไม่สามารถโหลดไฟล์ได้';
     };
-    test.src = v;
+    reader.readAsDataURL(file);
   }
 
-  btnOk.addEventListener('click', applyUrl);
+  btnOk.addEventListener('click', applyFile);
   btnCancel.addEventListener('click', close);
 
   overlay.addEventListener('click', e=>{ if(e.target === overlay) close(); });
   overlay.addEventListener('keydown', e=>{
     if(e.key === 'Escape') close();
-    if(e.key === 'Enter')  applyUrl();
+    if(e.key === 'Enter')  applyFile();
   });
 
   // กันพลาด: ก่อน submit ถ้า hidden ว่าง ให้ใช้รูปที่แสดงอยู่
@@ -72,3 +77,5 @@
     if(!hidden.value) hidden.value = avatarImg.src;
   });
 })();
+
+

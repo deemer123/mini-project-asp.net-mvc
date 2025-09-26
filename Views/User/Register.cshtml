@@ -40,11 +40,11 @@
                     <form asp-controller="User" method="POST" asp-action="Register">
                         <div class="name">
                             <label for="fname"></label>
-                            <input type="text" id="fname" name="firstname" placeholder="ชื่อ">
+                            <input type="text" id="fname" name="firstName" placeholder="ชื่อ">
                             <label for="lname"></label>
-                            <input type="text" id="lname" name="lastname" placeholder="นามสกุล">
+                            <input type="text" id="lname" name="lastName" placeholder="นามสกุล">
                         </div>
-                        <div class="gender">
+                        <div class="gender" >
                             <p>เพศ:</p>
                             <input type="radio" id="male" name="gender" value="MALE">
                             <label for="male">ชาย</label>
@@ -61,7 +61,7 @@
                             <input type="password" name="confirmPassword" id="confirmPassword" placeholder="ยืนยันรหัสผ่าน">
                         </div>
                         <div class="tel">
-                            <input type="tel" name="tel" id="tel" placeholder="เบอร์โทรติดต่อ">
+                            <input type="tel" name="phoneNumber" id="tel" placeholder="เบอร์โทรติดต่อ">
                         </div>
                         <div class="submit">
                             <button class="btn bg_yellow" type="submit">สมัครสมาชิก</button>
