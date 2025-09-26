@@ -268,3 +268,7 @@ footer {
         height: 44px;
     }
 }
+
+.notification-item {
+    color: #58A7DF !important;
+}
