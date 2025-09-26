@@ -1,6 +1,8 @@
 @model List<DemoVolunteer.Models.Post>
 
 <link rel="stylesheet" href="~/css/managepost.css" />
+<link rel="stylesheet" href="~/css/style_global.css">
+<link rel="stylesheet" href="~/css/viewmember.css">
 @* <h1>จัดการโพส</h1>
 
 <p>โพสสมาชิกอื่น @ViewBag.joinAmount</p>
@@ -69,8 +71,10 @@
                                     <td>@post.CreatedAt</td>
                                     <td><a href="#">@post.Title.</a></td>
                                     <td>@post.AmountParticipant / @post.MaxParticipants คน</td>
-                                    <td><a class="btn view-members" asp-controller="Post" asp-action="PostJoinList"  asp-route-postId="@post.PostId"
-                                            data-href="viewmember.html">ดูสมาชิก</a></td>
+                                    @* asp-controller="Post" asp-action="PostJoinList"  asp-route-postId="@post.PostId" *@
+                                    <td><a class="btn view-members" 
+                                            data-href="/Post/Members?postId=@post.PostId">ดูสมาชิก</a></td>
+                                            @* data-href="viewmember.html">ดูสมาชิก</a></td> *@
                                     <td><a class="btn bg_blue" asp-controller="Post" asp-action="Edit" asp-route-postId="
                                             @post.PostId">แก้ไขโพสต์</a></td>
                                     <td><a class="btn cancal" data-confirm="คุณต้องการลบโพสต์ที่คุณสร้าง ใช่ไหม?"

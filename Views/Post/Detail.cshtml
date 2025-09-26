@@ -46,7 +46,21 @@
                     <p><span class="hl-black">ติดต่อผู้จัดกิจกรรม :</span> @Model.Owner.PhoneNumber</p>
                 </div>
                 <div class="button-box">
-                    <button class="btn join">เข้าร่วมกิจกรรม</button>
+                    <form method="POST" asp-action="Join">
+                        <input type="hidden" name="postId" value=@Model.PostId>
+                        @if(Model.Status == "Open"){
+                            <button class="btn join" type="submit">เข้าร่วมจิตอาสา</button>
+                        }
+                        else if(Model.Status == "Full"){
+                            <button class="btn join" type="submit" disabled>สมาชิกเต็ม</button>
+                        }
+                        else if(Model.Status == "Closed"){
+                            <button  class="btn join" type="submit" disabled>ปิดการรับสมาชิก</button>
+                        }
+                        else if(Model.Status == "Expired"){
+                            <button class="btn join" type="submit" disabled>โพสต์หมดอายุแล้ว</button>
+                        }
+                    </form>                    
                 </div>
             </div>
 

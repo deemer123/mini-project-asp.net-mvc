@@ -1,6 +1,6 @@
 @model List<DemoVolunteer.Models.Join>
  
-<p>ชื่อ: @ViewBag.FullName</p>
+@* <p>ชื่อ: @ViewBag.FullName</p>
 <p>เลขโทรศัพท์: @ViewBag.Phone</p>
 <p>อีเมล: @ViewBag.Email</p>
 <p>เวลาจิตอาสา: @ViewBag.Score</p>
@@ -14,4 +14,84 @@
         <li>@join.Status - @join.Post.Title - @join.Post.Score - @join.Post.AppointmentDate.ToString("yyyy-MM-dd") @join.Post.TimeStart.ToString("HH:mm"); - @join.Post.TimeEnd.ToString("HH:mm"); <a href="/Post/JoinDel?joinId=@join.JoinId">ลบ</a></li>
     }  
 }
-</ol>
+</ol> *@
+<link rel="stylesheet" href="~/css/history_join.css">
+<link rel="stylesheet" href="~/css/indexuser.css">
+<link rel="stylesheet" href="~/css/style_global.css">
+
+ <main>
+    <div class="content-1">
+        <div class="layer-1">
+            <div class="profile">
+                <img src="@ViewBag.Img"
+                    alt="รูปโปรไฟล์">
+            </div>
+            <div class="description">
+                <h2 style="font-size: 2rem; font-weight: 300;">@ViewBag.FullName</h2>
+                <p style="color: #2E7CF3; font-weight: bold;">ข้อมูลติดต่อ</p>
+                <p>เบอร์: @ViewBag.Phone</p>
+                <p>อีเมล: @ViewBag.Email</p>
+                <p style="color: #2E7CF3; font-weight: bold;">เวลาที่เคยทำจิตอาสา :</p>
+                <p>@ViewBag.Score ชม.</p>
+            </div>
+        </div>
+        <div class="layer-2">
+            <table>
+
+                <thead>
+                    <th class="headtable" colspan="5">งานจิตอาสาที่เข้าร่วม</th>
+                    <tr>
+                        <th>สถานะ</th>
+                        <th>งานอาสา</th>
+                        <th>ชั่วโมง</th>
+                        <th>วันที่จัดกิจกรรม</th>
+                        <th>เวลาทำกิจกรรม</th>
+                        <th>ยกเลิกกิจกรรม</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="status_activity wait">รอเข้าร่วมกิจกรรม</td>
+                        <td><a href="#">อาสาปลูกป่าชายเลน บางปู ...</a></td>
+                        <td>5</td>
+                        <td>09/พ.ย./2567 - 15/พ.ย./2567</td>
+                        <td>08:30 - 15:30</td>
+                        <td><button class="btn cancal">ยกเลิก</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+@* @if (Model == null || !Model.Any())
+{
+    <p>ยังไม่มีการเข้าร่วมกิจกรรม</p>
+}else{
+    @foreach (Join join in Model){
+        <li>@join.Status - @join.Post.Title - @join.Post.Score - @join.Post.AppointmentDate.ToString("yyyy-MM-dd") @join.Post.TimeStart.ToString("HH:mm"); - @join.Post.TimeEnd.ToString("HH:mm"); <a href="/Post/JoinDel?joinId=@join.JoinId">ลบ</a></li>
+    }  
+} *@
+
+            <table>
+                <thead>
+                    <th class="headtable" colspan="5">ประวัติจิตอาสาที่เข้าร่วม</th>
+                    <tr>
+                        <th>สถานะ</th>
+                        <th>งานอาสา</th>
+                        <th>ชั่วโมง</th>
+                        <th>วันที่จัดกิจกรรม</th>
+                        <th>เวลาทำกิจกรรม</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="status_activity done">เข้าร่วมกิจกรรมเสร็จสิ้น</td>
+                        <td><a href="#">อาสาปลูกป่าชายเลน บางปู ...</a></td>
+                        <td>5</td>
+                        <td>09/พ.ย./2567 - 15/พ.ย./2567</td>
+                        <td>08:30 - 15:30</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</main>

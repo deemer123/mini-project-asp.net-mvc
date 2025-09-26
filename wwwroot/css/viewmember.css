@@ -1,0 +1,79 @@
+.content_viewmember {
+  max-width: 1100px;
+  width: 100%;
+  padding: 2rem 1rem;
+  padding-bottom: 500px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  height: auto;
+
+}
+
+.layer {
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.fortitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.member-count {
+  right: 30px;
+  font-weight: bold;
+  color: #333;
+}
+
+.bt {
+  display: flex;
+  justify-content: end;
+}
+
+.content_viewmember h2 {
+
+  color: #0078D4;
+  text-align: center;
+}
+
+.content_viewmember > table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content_viewmember >th,.content >
+td {
+  padding: 14px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.content_viewmember >th {
+  background-color: #0078D4;
+  color: white;
+}
+.gender {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #1D6A9A; /* สีฟ้า */
+  color: #fff;
+  font-weight: bold;
+  border-radius: 10px;
+  text-align: center;
+  width: auto;
+}
+
+/* กรอบสีชมพูสำหรับเพศหญิง */
+.gender[data-gender="female"] {
+  background-color: #F06292; /* สีชมพู */
+}
+
+/* เมื่อ gender เป็น "ชาย" เพิ่ม class สำหรับบ่งบอก */
+.gender[data-gender="male"] {
+  background-color: #2E7CF3;; /* ฟ้า */
+}

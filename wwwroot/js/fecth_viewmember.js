@@ -10,7 +10,10 @@
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const main = doc.querySelector('main');
       bodySlot.innerHTML = main ? main.innerHTML : '<p>ไม่พบข้อมูล</p>';
-
+      
+      console.log(res);
+      console.log(html);
+      
       // ทำให้ตารางเลื่อนในกรอบ
       bodySlot.querySelectorAll('table').forEach(t => {
         const wrap = document.createElement('div');

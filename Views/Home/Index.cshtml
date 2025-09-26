@@ -37,6 +37,7 @@
         <!-- for select activity -->
 
         <div class="selectbutton">
+            <a class="btn" asp-controller="Home" asp-action="Index">ทั้งหมด</a>
             @foreach (var category in @ViewBag.Categories)
             {   //แก้ไขการ filter ตามหมวดหมู่
                 <a class="btn" asp-controller="Home" asp-action="Index" asp-route-categorieId="@category.CategoryId">@category.Name</a>
@@ -53,9 +54,9 @@
         
         <div class="activity">
             @if(post.ImgURL != null){
-                <img src="@post.ImgURL"  alt="volunteer" width="100px">
+                <img class="img-preview" src="@post.ImgURL"  alt="volunteer" width="100px">
             }else{
-                <img src="~/img/default-post-pic.jpg" alt="img">
+                <img class="img-preview" src="~/img/default-post-pic.jpg" alt="img" width="100px">
             }
             <h4>@post.Title</h4>
             <p>

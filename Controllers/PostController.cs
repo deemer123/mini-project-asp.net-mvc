@@ -4,6 +4,7 @@ using DemoVolunteer.Data;
 using DemoVolunteer.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
+using System.Text;
 
 namespace MyMvcProject.Controllers
 {
@@ -153,7 +154,7 @@ namespace MyMvcProject.Controllers
             var joins = await _context.Joins
                 .Where(p => p.PostId == postId)
                 .ToListAsync();
-                
+
             return View(post);
         }
 
@@ -176,7 +177,7 @@ namespace MyMvcProject.Controllers
             {
                 return Content("Model is null");
             }
-            
+
             // ถ้ามีการแก้ไขภาพเข้ารวมกิจกรรม
             if (imageFile2 != null && imageFile2.Length > 0)
             {
@@ -203,7 +204,9 @@ namespace MyMvcProject.Controllers
                 // กำหนด ImgURL ใน Model เป็น path สำหรับแสดงภาพ
                 model.ImgURL = "/img/" + FileName;
                 Console.WriteLine("เปลี่ยนภาพ");
-            } else if (imageFile != null && imageFile.Length > 0 && post.ImgURL == null) {
+            }
+            else if (imageFile != null && imageFile.Length > 0 && post.ImgURL == null)
+            {
 
                 // ตั้งชื่อไฟล์เอง เช่น ใช้ชื่อจาก Model หรือเวลาปัจจุบัน
                 var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -251,12 +254,13 @@ namespace MyMvcProject.Controllers
             post.TimeEnd = model.TimeEnd;
             post.Score = Score;
             post.AppointmentDateEnd = model.AppointmentDateEnd;
-            
+
             if (imageFile != null)
             {
                 post.ImgURL = model.ImgURL;
             }
-            if (imageFile2 != null) {
+            if (imageFile2 != null)
+            {
                 post.AppointImg = model.AppointImg;
             }
 
@@ -276,7 +280,7 @@ namespace MyMvcProject.Controllers
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
 
-             // แจ้งเตื่อนเจ้าของ post
+            // แจ้งเตื่อนเจ้าของ post
             var notifyOwner = notificationModel(post.OwnerId, $"คุณได้ลบกิจกรรมของคุณในโพสต์ '{post.Title}'");
             _context.Notifications.Add(notifyOwner);
             await _context.SaveChangesAsync();
@@ -319,7 +323,7 @@ namespace MyMvcProject.Controllers
                 .ToListAsync();
             if (post.Owner.Id == user.Id) // ตรวจสอบว่า userID Login ตรง กับ postOwnerID รึเปล่า?
             {
-                TempData["PopupMessage"] = "ณเข้าร่วมกิจกรรมของตัวเองไม่ได้!!";
+                TempData["PopupMessage"] = "เข้าร่วมกิจกรรมของตัวเองไม่ได้!!";
                 TempData["PopupType"] = "error";
                 return Redirect($"/Post/Detail?postId={postId}");
             }
@@ -331,6 +335,13 @@ namespace MyMvcProject.Controllers
             if (ispost != null)
             {
                 TempData["PopupMessage"] = "เข้าร่วมกิจรรมซ้ำไม่ได้!!!";
+                TempData["PopupType"] = "error";
+                return Redirect($"/Post/Detail?postId={postId}");
+            }
+            // Post เต็ม
+            if (joins.Count == post.MaxParticipants)
+            {
+                TempData["PopupMessage"] = "สมาชิกเต็มแล้ว!!!";
                 TempData["PopupType"] = "error";
                 return Redirect($"/Post/Detail?postId={postId}");
             }
@@ -403,14 +414,14 @@ namespace MyMvcProject.Controllers
         {
             // ลบ Join
             var user = await _userManager.GetUserAsync(User);
-            var join = await _context.Joins  
+            var join = await _context.Joins
                 .Include(p => p.Post)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(p => p.JoinId == joinId);
             _context.Joins.Remove(join);
             await _context.SaveChangesAsync();
 
-             // แจ้งเตื่อนเจ้าของ post
+            // แจ้งเตื่อนเจ้าของ post
             var notifyOwner = notificationModel(join.Post.OwnerId, $"{join.User.FullName} ยกเลิกจากกิจกรรม {join.Post.Title}");
             _context.Notifications.Add(notifyOwner);
             await _context.SaveChangesAsync();
@@ -425,7 +436,7 @@ namespace MyMvcProject.Controllers
             TempData["PopupType"] = "success"; // success, error, inf
             return Redirect("/Post/Manager");
         }
-        
+
         // แสดงรายชื่อการเข้าร่วมกิจกรรม ของ User
         public async Task<IActionResult> UserJoinList()
         {
@@ -434,11 +445,79 @@ namespace MyMvcProject.Controllers
                     .Include(p => p.Post)
                     .Where(p => p.UserId == user.Id)
                     .ToListAsync();
+            ViewBag.Img = user.ImgURL;
             ViewBag.FullName = user.FullName;
             ViewBag.Phone = user.PhoneNumber;
             ViewBag.Email = user.Email;
             ViewBag.Score = user.Score;
             return View(joins);
         }
+
+        public async Task<IActionResult> Close(int postId)
+        {
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postId);
+            post.Status = "Close";
+            await _context.SaveChangesAsync();
+            // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
+            TempData["PopupMessage"] = $"ปิดการรับสมาชิกแล้ว!!";
+            TempData["PopupType"] = "success"; // success, error, inf
+            return Redirect("/Post/Manager");
+        }
+
+        // // API ที่ส่งข้อมูล Join กลับเป็น JSON
+        // [HttpGet]
+        // public async Task<JsonResult> Members(int? postId)
+        // {
+        //     var joins = await _context.Joins
+        //         .Include(p => p.User)
+        //         .Where(p => p.PostId == postId)
+        //         .ToListAsync();
+
+        //     var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postId);
+        //     ViewBag.joinAmount = joins.Count;
+        //     ViewBag.MaxParticipants = post.MaxParticipants;
+
+        //     return Json(joins);
+        // }
+
+        public async Task<IActionResult> Members(int postId)
+        {
+            // ระบุ path ของไฟล์ HTML
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "html", "viewmember.html");
+
+            // อ่านเนื้อหา HTML จากไฟล์
+            var htmlTemplate  = System.IO.File.ReadAllText(filePath);
+
+            var joins =  await _context.Joins
+                .Include(p => p.User)
+                .Where(p => p.PostId == postId)
+                .ToListAsync();
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postId); 
+            
+            // สร้าง HTML สำหรับแต่ละ post
+            var membertHtml = new StringBuilder();
+            int i = 0;
+            foreach (var join in joins)
+            {
+                membertHtml.AppendLine($"<tr>");
+                membertHtml.AppendLine($"<td>{i + 1}</td>");
+                membertHtml.AppendLine($"<td>{join.User.FullName}</td>");
+                membertHtml.AppendLine($"<td>{join.User.PhoneNumber}</td>");
+                membertHtml.AppendLine($"<td><p class='gender' data-gender='male'>{join.User.Gender}</p></td>");
+                membertHtml.AppendLine($"<td>");
+                membertHtml.AppendLine($"<button class='btn cancal' data-confirm='คุณต้องการลบสมาชิกที่คุณเลือก ใช่ไหม?' data-confirm-title='ยืนยันการลบสมาชิก' data-ok-text='ยืนยัน' data-cancel-text='ปิด'>ลบสมาชิก</button>");
+                membertHtml.AppendLine($"</td>");
+                membertHtml.AppendLine($"</tr>");
+            }
+
+            // แทนที่ {{MenberList}} ด้วย HTML ที่สร้างจาก loop
+            // htmlTemplate.Replace("{{joinCount}}", $"{joins.Count} / {post.MaxParticipants}");
+            var finalHtml = htmlTemplate.Replace("{{MenberList}}", membertHtml.ToString());
+            
+   
+            // ส่งกลับ HTML
+            return Content(finalHtml, "text/html");
+        }
+        
     }
 }
