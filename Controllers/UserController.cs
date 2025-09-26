@@ -119,6 +119,7 @@ public class UserController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(UserViewModel model, IFormFile? imageFile)
     {
+        Console.WriteLine($"File : {imageFile}");
         if (!ModelState.IsValid)
         {
             var errors = ModelState.Values
@@ -126,7 +127,7 @@ public class UserController : Controller
                 .Select(e => e.ErrorMessage)
                 .ToList();
 
-            // debug ดู errors
+            // debug ดู errors 
             return Json(errors);
         }
         var user = await _userManager.GetUserAsync(User);

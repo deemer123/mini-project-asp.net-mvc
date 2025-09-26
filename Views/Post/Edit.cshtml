@@ -1,109 +1,47 @@
+@{
+    ViewData["Title"] = "EditPost";
+}
 @model DemoVolunteer.Models.Post
+
 <link rel="stylesheet" href="~/css/editpost.css" />
-
-@* 
-<form method="POST" asp-action="Edit" asp-controller="Post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="PostId" value=@Model.PostId />
-
-    <label for="img">อัปโหลดรูปภาพ:</label>
-    <input type="file" id="imageInput" accept="image/*" name="imageFile" />
-    <img id="preview" src=@Model.ImgURL alt="Image Preview" width="500" height="600" style="display: block;">
-
-    <label for="title">ชื่อหัวเรือง</label>
-    <input asp-for="Title" type="text" name="title" placeholder="title" value=@Model.Title />
-
-    <label for="CategoryId">เลือกประเภท:</label>
-    <select asp-for="CategoryId" name="CategoryId">
-        @foreach (var category in @ViewBag.Categories)
-        {
-            <option value="@category.CategoryId">@category.Name</option>
-        }
-    </select>
-
-    <label for="location">สถาที่นัดหมาย:</label>
-    <input asp-for="Location" type="text" name="location" placeholder="location" value=@Model.Location />
-
-    <label for="category">จำนวนที่รับ:</label>
-    <input asp-for="MaxParticipants" type="number" name="MaxParticipants" placeholder="MaxParticipants"
-        value=@Model.MaxParticipants />
-
-    <label for="Description">ลายละเอียด:</label>
-    <textarea asp-for="Description" placeholder="textarea" value=@Model.Description></textarea>
-
-    <label for="date">วันที่นัด:</label>
-    <input asp-for="AppointmentDate" type="date" name="AppointmentDate" placeholder="AppointmentDate"
-        value="@Model.AppointmentDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)" />
-
-    <label for="timestart">เริ่มเวลา:</label>
-    <input asp-for="TimeStart" type="time" name="timestart" placeholder="time"
-        value="@Model.TimeStart.ToString("HH:mm")" />
-
-    <label for="timeend">จบที่เวลา:</label>
-    <input asp-for="TimeEnd" type="time" name="timeend" placeholder="time" value="@Model.TimeEnd.ToString("HH:mm")" />
-
-    <label for="score">จำนวนชั่วโมง:</label>
-    <input asp-for="Score" type="number" name="score" placeholder="score" value=@Model.Score />
-
-    <hr />
-
-    <label for="img">อัปโหลดรูปภาพกิจกรรม:</label>
-    <input type="file" id="imageInput2" accept="image/*" name="imageFile2" />
-    @if (Model.AppointImg != null)
-    {
-        <img id="preview2" src=@Model.AppointImg alt="Image Preview" width="500" height="600" style="display: block;">
-    }
-
-    <label for="date">เวลาปิดโพสต์กิจกรรม:</label>
-    <input asp-for="AppointmentDateEnd" type="date" name="AppointmentDateEnd" placeholder="AppointmentDateEnd"
-        value="@(Model.AppointmentDateEnd.HasValue? Model.AppointmentDateEnd.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) : "")" />
-
-    <button type="submit">บันทึก</button>
-</form> *@
-
-
-
-
 
 
 <main>
     <div class="content">
         <div class="container">
-
             <h2>แก้ไขโพสต์กิจกรรม</h2>
 
-            <!-- <div class="img">
-                    <img src="https://images.unsplash.com/photo-1757252800867-2e78e08a6d53?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDEyfGJvOGpRS1RhRTBZfHxlbnwwfHx8fHw%3D"
-                        alt="">
-                </div> -->
             <div class="addpost-image-container">
-                <img src="https://images.unsplash.com/photo-1757252800867-2e78e08a6d53?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDEyfGJvOGpRS1RhRTBZfHxlbnwwfHx8fHw%3D"
-                    class="addpost-image" alt="กิจกรรม">
+                @if(Model.ImgURL != null){
+                    <img src="@Model.ImgURL" class="addpost-image" alt="กิจกรรม">
+                }else{
+                    <img src="~/img/default-post-pic.jpg" class="addpost-image" alt="กิจกรรม">
+                }
                 <button class="edit-button" aria-label="แก้ไขภาพ">✎</button>
             </div>
-            <div class="activity_img-overlay" id="activity_imgOverlay" hidden>
-                <div class="activity_img-modal" role="dialog" aria-modal="true" aria-labelledby="activity_imgTitle">
-                    <h3 id="activity_imgTitle">เลือกภาพกิจกรรม</h3>
-                    <p class="activity_img-hint">เลือกไฟล์รูปภาพจากเครื่องของคุณ</p>
-
-                    <div class="activity_img-input">
-                        <input type="file" id="activity_imgFile" accept="image/*" />
-                    </div>
-
-                    <p class="activity_img-error" id="activity_imgError" aria-live="polite"></p>
-
-                    <div class="activity_img-actions">
-                        <button type="button" class="btn" id="activity_imgCancel">ยกเลิก</button>
-                        <button type="button" class="btn bg_blue" id="activity_imgConfirm">ยืนยัน</button>
-                    </div>
-                </div>
-            </div>
+            
 
             <form method="POST" asp-action="Edit" asp-controller="Post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="PostId" value=@Model.PostId/>
+                <div class="activity_img-overlay" id="activity_imgOverlay" hidden>
+                    <div class="activity_img-modal" role="dialog" aria-modal="true" aria-labelledby="activity_imgTitle">
+                        <h3 id="activity_imgTitle">เลือกภาพกิจกรรม</h3>
+                        <p class="activity_img-hint">เลือกไฟล์รูปภาพจากเครื่องของคุณ</p>
+                        <div class="activity_img-input">
+                            <input type="file" id="activity_imgFile" accept="image/*" name="imageFile"/>
+                        </div>
 
+                        <p class="activity_img-error" id="activity_imgError" aria-live="polite"></p>
+
+                        <div class="activity_img-actions">
+                            <button type="button" class="btn" id="activity_imgCancel">ยกเลิก</button>
+                            <button type="button" class="btn bg_blue" id="activity_imgConfirm">ยืนยัน</button>
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <label>ชื่อกิจกรรมจิตอาสา</label>
                     <input asp-for="Title" type="text" name="title" placeholder="title" value=@Model.Title />
-
                 </div>
 
                 <div>
@@ -134,11 +72,12 @@
                     <label>วันที่จัดกิจกรรม</label>
                     <div class="datetime-wrapper">
                         <input asp-for="AppointmentDate" type="date" name="AppointmentDate"
-                            placeholder="AppointmentDate"
                             value="@Model.AppointmentDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)" />
 
                         <p>ถึง</p>
-                        <input type="date" name="endDate" class="end-date">
+
+                        <input asp-for="AppointmentDateArrive" type="date" name="AppointmentDateArrive" class="end-date"
+                            value="@Model.AppointmentDateArrive?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)">
                     </div>
                 </div>
                 <div>
@@ -159,14 +98,18 @@
 
                 <div class="full-width">
                     <label>รูปภาพกิจกรรม</label>
-                    <input type="file" name="image">
+                    <input type="file" id="imageInput2" accept="image/*" name="imageFile2"/>
                 </div>
+                @if(Model.AppointImg != null){
+                    <img id="preview2" src=@Model.AppointImg alt="Image Preview" width="500" height="600" style="display: block;">
+                }
+
 
                 <div class="full-width">
                     <label>เวลาปิดโพสต์กิจกรรม</label>
                     <div class="datetime-wrapper">
-                        <input type="date" name="closeDate" class="close-date">
-                        <input type="time" name="closeTime" class="close-time">
+                        <input asp-for="AppointmentDateEnd" type="datetime-local" name="AppointmentDateEnd" class="close-date"
+                            value="@Model.AppointmentDateEnd?.ToString("yyyy-MM-ddTHH:mm",System.Globalization.CultureInfo.InvariantCulture)">
                     </div>
                 </div>
 
@@ -174,28 +117,13 @@
             </form>
         </div>
 </main>
-
+<script src="~/js/post_choose_file.js"></script>
 
 @* เปลื่ยน รูปภาพที่แสดงบน หน้าเว็บ *@
+
 <script>
-    const imageInput = document.getElementById('imageInput');
     const imageInput2 = document.getElementById('imageInput2');
-    const preview = document.getElementById('preview');
     const preview2 = document.getElementById('preview2');
-
-    imageInput.addEventListener('change', function () {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            }
-
-            reader.readAsDataURL(file);
-        }
-    });
 
 
     imageInput2.addEventListener('change', function () {

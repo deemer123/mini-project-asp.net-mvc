@@ -83,36 +83,39 @@ namespace DemoVolunteer.Data
             //     .HasColumnType("decimal(18,2)");
 
 
-            // // Seed data
-            // modelBuilder.Entity<ApplicationUser>().HasData(
-            //     new User
-            //     {
-            //         FirstName = "Laptop",
-            //         LastName = "Gaming Laptop",
-            //         Email = "Laptop@email.com",
-            //         PhoneNumber = "0659364588",
-            //         CreatedDate = DateTime.Now,
-            //         Score = 20
-            //     },
-            //     new ApplicationUser
-            //     {
-            //         FirstName = "Mouse",
-            //         LastName = "Wireless Mouse",
-            //         Email = "Mouse@email.com",
-            //         PhoneNumber = "0759364588",
-            //         CreatedDate = DateTime.Now,
-            //         Score = 25
-            //     },
-            //     new User
-            //     {
-            //         FirstName = "Keyboard",
-            //         LastName = "Mechanical Keyboard",
-            //         Email = "Keyboard@email.com",
-            //         PhoneNumber = "0859364588",
-            //         CreatedDate = DateTime.Now,
-            //         Score = 10
-            //     }
-            // );
+            // Seed data
+            modelBuilder.Entity<Category>().HasData(
+                new Category
+                {
+                    CategoryId = 1,
+                    Name = "ทำความสะอาด",
+                    IsActive = true
+                },
+                new Category
+                {
+                    CategoryId = 2,
+                    Name = "ทำบุญ",
+                    IsActive = true
+                },
+                new Category
+                {
+                    CategoryId = 3,
+                    Name = "บริจาคของ",
+                    IsActive = true
+                },
+                new Category
+                {
+                    CategoryId = 4,
+                    Name = "มิตรสิ่งแวดล้อม",
+                    IsActive = true
+                },
+                new Category
+                {
+                    CategoryId = 5,
+                    Name = "อื่นๆ",
+                    IsActive = true
+                }
+            );
         }
     }
 }

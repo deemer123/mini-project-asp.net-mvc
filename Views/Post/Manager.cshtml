@@ -48,10 +48,7 @@
             }
             else
             {
-                @foreach (Post post in Model)
-                {
-
-                    <div class="layer-2">
+                <div class="layer-2">
                         <table>
                             <thead>
                                 <th class="headtable" colspan="5">รายการจิตอาสาที่ฉันสร้าง</th>
@@ -66,6 +63,8 @@
                                 </tr>
                             </thead>
                             <tbody>
+                @foreach (Post post in Model)
+                {
                                 <tr>
                                     <td>@post.CreatedAt.ToString()</td>
                                     <td><a asp-controller="Post" asp-action="Detail"asp-route-postId="@post.PostId">@post.Title.</a></td>
@@ -80,10 +79,11 @@
                                             asp-route-postId="@post.PostId">ลบโพสต์</a></td>
                                     <td><a class="btn join" id="toggleBtn">เปิดรับสมัคร</a></td>
                                 </tr>
-                            </tbody>
+                            
+                }
+                        </tbody>
                         </table>
                     </div>
-                }
             }
         </div>
     </div>

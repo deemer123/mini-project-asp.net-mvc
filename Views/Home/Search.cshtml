@@ -52,7 +52,11 @@
     {
         
         <div class="activity">
-            <img src="@post.ImgURL" alt="volunteer" width="100px">
+            @if(post.ImgURL != null){
+                <img src="@post.ImgURL"  alt="volunteer" width="100px">
+            }else{
+                <img src="~/img/default-post-pic.jpg" alt="img">
+            }
             <h4>@post.Title</h4>
             <p>
                 สถานที่: @post.Location <br>

@@ -83,28 +83,50 @@ namespace MyMvcProject.Controllers
             else
             {
                 //กรณีไม่ได้กำหนดรูปภาพ
-                model.ImgURL = "/img/default-post-image.png";
+                model.ImgURL = null;
             }
+            // คำนวน จำนวนชั่วโมงกิจกรรม
+            DateTime? date1 = model.AppointmentDate;
+            DateTime? date2 = model.AppointmentDateArrive;
+
+            DateTime? time1 = model.TimeStart;
+            DateTime? time2 = model.TimeEnd;
+            double totalDays = 0;
+            double totalHours = 0;
+
+            if (date1.HasValue && date2.HasValue)
+            {
+                TimeSpan duration = date2.Value - date1.Value;
+                totalDays = duration.TotalDays + 1;
+            }
+            if (time1.HasValue && time2.HasValue)
+            {
+                TimeSpan duration = time2.Value - time1.Value;
+                totalHours = duration.TotalHours;
+            }
+            double score = totalDays * totalHours;
+            model.Score = Convert.ToInt32(score);
             // บันทึก model ลง DB หรือทำงานต่อ
             var newPost = new Post
             {
                 Title = model.Title,
-                OwnerId = user.Id,
-                CategoryId = model.CategoryId,
-                Description = model.Description,
-                Location = model.Location,
                 MaxParticipants = model.MaxParticipants,
+                Location = model.Location,
+                CategoryId = model.CategoryId,
+                OwnerId = user.Id,
                 AppointmentDate = model.AppointmentDate,
+                AppointmentDateArrive = model.AppointmentDateArrive,
                 TimeStart = model.TimeStart,
                 TimeEnd = model.TimeEnd,
+                Description = model.Description,
+                AppointImg = model.AppointImg,
+                AppointmentDateEnd = model.AppointmentDateEnd,
                 Score = model.Score,
                 Status = "Open",
                 ImgURL = model.ImgURL,
-                AppointImg = model.AppointImg,
-                AppointmentDateEnd = model.AppointmentDateEnd,
                 CreatedAt = DateTime.Now
             };
-            
+
             // var json = JsonSerializer.Serialize(newPost);
             // Console.WriteLine(json); // หรือ Debug.WriteLine(json);
 
@@ -131,11 +153,7 @@ namespace MyMvcProject.Controllers
             var joins = await _context.Joins
                 .Where(p => p.PostId == postId)
                 .ToListAsync();
-            if (joins.Count == post.MaxParticipants) 
-            {
-                post.Status = "Full";
-                await _context.SaveChangesAsync();
-            }
+                
             return View(post);
         }
 
@@ -150,15 +168,15 @@ namespace MyMvcProject.Controllers
 
         // ดำเนินการแก้ไขข้อมูล post
         [HttpPost]
-        public async Task<IActionResult> Edit(Post model, IFormFile imageFile, IFormFile imageFile2)
+        public async Task<IActionResult> Edit(Post model, IFormFile? imageFile, IFormFile? imageFile2)
         {
             var user = await _userManager.GetUserAsync(User);
             var post = await _context.Posts.FindAsync(model.PostId); // ดึงรายการเดียวตาม PostId
-
             if (model == null || user == null)
             {
                 return Content("Model is null");
             }
+            
             // ถ้ามีการแก้ไขภาพเข้ารวมกิจกรรม
             if (imageFile2 != null && imageFile2.Length > 0)
             {
@@ -170,13 +188,23 @@ namespace MyMvcProject.Controllers
                 }
                 model.AppointImg = "/img/" + fileName2; // สมมุติว่ามี field นี้ใน Model
             }
-            else
-            {
-                model.AppointImg = null;
-            }
+
             // ถ้ามีการแก้ไขภาพกิจกรรม
-            if (imageFile != null && imageFile.Length > 0)
+            if (imageFile != null && imageFile.Length > 0 && post.ImgURL != null)
             {
+                // ตั้งชื่อไฟล์
+                string[] arrayPath = post.ImgURL.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                var FileName = arrayPath[1];
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", FileName);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+                // กำหนด ImgURL ใน Model เป็น path สำหรับแสดงภาพ
+                model.ImgURL = "/img/" + FileName;
+                Console.WriteLine("เปลี่ยนภาพ");
+            } else if (imageFile != null && imageFile.Length > 0 && post.ImgURL == null) {
+
                 // ตั้งชื่อไฟล์เอง เช่น ใช้ชื่อจาก Model หรือเวลาปัจจุบัน
                 var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                 var customFileName = $"{user.Id}_" + timestamp + Path.GetExtension(imageFile.FileName);
@@ -189,11 +217,28 @@ namespace MyMvcProject.Controllers
                 model.ImgURL = "/img/" + customFileName;
                 Console.WriteLine("เปลี่ยนภาพ");
             }
-            else
+            // คำนวน จำนวนชั่วโมงกิจกรรม
+            DateTime? date1 = model.AppointmentDate;
+            DateTime? date2 = model.AppointmentDateArrive;
+
+            DateTime? time1 = model.TimeStart;
+            DateTime? time2 = model.TimeEnd;
+            double totalDays = 0;
+            double totalHours = 0;
+
+            if (date1.HasValue && date2.HasValue)
             {
-                Console.WriteLine("ไม่เปลี่ยนภาพ");
-                model.ImgURL = post.ImgURL;
+                TimeSpan duration = date2.Value - date1.Value;
+                totalDays = duration.TotalDays + 1;
             }
+            if (time1.HasValue && time2.HasValue)
+            {
+                TimeSpan duration = time2.Value - time1.Value;
+                totalHours = duration.TotalHours;
+            }
+            double score = totalDays * totalHours;
+            int Score = Convert.ToInt32(score);
+
             // อัปเดตค่าจากฟอร์ม
             post.Title = model.Title;
             post.CategoryId = model.CategoryId;
@@ -201,17 +246,22 @@ namespace MyMvcProject.Controllers
             post.MaxParticipants = model.MaxParticipants;
             post.Description = model.Description;
             post.AppointmentDate = model.AppointmentDate;
+            post.AppointmentDateArrive = model.AppointmentDateArrive;
             post.TimeStart = model.TimeStart;
             post.TimeEnd = model.TimeEnd;
-            post.Score = model.Score;
-            post.ImgURL = model.ImgURL;
-            post.AppointImg = model.AppointImg;
+            post.Score = Score;
             post.AppointmentDateEnd = model.AppointmentDateEnd;
-            await _context.SaveChangesAsync();
             
+            if (imageFile != null)
+            {
+                post.ImgURL = model.ImgURL;
+            }
+            if (imageFile2 != null) {
+                post.AppointImg = model.AppointImg;
+            }
 
-            Console.WriteLine($"วันที่ที่รับมา: {model.AppointmentDate}");
-            Console.WriteLine($"วันที่ปิดที่รับมา: {model.AppointmentDateEnd}");
+            await _context.SaveChangesAsync();
+
             // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
             TempData["PopupMessage"] = $"แก้ไขโพสตแล้ว!!";
             TempData["PopupType"] = "success"; // success, error, inf
