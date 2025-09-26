@@ -20,7 +20,7 @@ public class HomeController : Controller
     }
 
     //หน้าแรกแสดงโพสทั้งหมด
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int? categorieId) //เพิ่มพารามิเตอร์
     {
         if (User.Identity.IsAuthenticated)
         {
@@ -31,32 +31,17 @@ public class HomeController : Controller
             ViewBag.Email = user.Email;
         }
 
-        //ส่งข้อมูล Categories ไปที่ View ผ่าน ViewBag
+        //ส่งข้อมูล Categories ไปที่ View ผ่าน ViewBag //แก้ไขการ filter หมวดหมู่
         ViewBag.Categories = _context.Categories.ToList();
-        var posts = await _context.Posts
-            .Include(p => p.Owner)
-            .Where(p => p.IsActive == true)
-            .ToListAsync();
-        return View(posts);
-    }
+        IQueryable<Post> query = _context.Posts.Include(p => p.Owner).Where(p => p.IsActive == true);
 
-    //หน้าแสดงโพสตามหมวดหมู่
-    public async Task<IActionResult> Post(int categorieId)
-    {
-        if (User.Identity.IsAuthenticated)
+        if (categorieId.HasValue)
         {
-            var user = await _userManager.GetUserAsync(User);
-            ViewBag.FullName = user.FullName;
-            ViewBag.Gender = user.Gender;
-            ViewBag.PhoneNumber = user.PhoneNumber;
-            ViewBag.Email = user.Email;
+            query = query.Where(p => p.CategoryId == categorieId.Value);
+            ViewBag.SelectedCategoryId = categorieId.Value;
         }
-        ViewBag.Categories = _context.Categories.ToList();
-        var posts = await _context.Posts
-            .Include(p => p.Owner)
-            .Where(p => p.CategoryId == categorieId)
-            .Where(p => p.IsActive == true)
-            .ToListAsync();
+
+        var posts = await query.ToListAsync();
         return View(posts);
     }
 
