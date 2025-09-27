@@ -1,21 +1,5 @@
 @model List<DemoVolunteer.Models.Join>
 
-@* <p>ชื่อ: @ViewBag.FullName</p>
-<p>เลขโทรศัพท์: @ViewBag.Phone</p>
-<p>อีเมล: @ViewBag.Email</p>
-<p>เวลาจิตอาสา: @ViewBag.Score</p>
-<hr/>
-<ol>
-@if (Model == null || !Model.Any())
-{
-    <p>ยังไม่มีการเข้าร่วมกิจกรรม</p>
-}else{
-    @foreach (Join join in Model){
-        <li>@join.Status - @join.Post.Title - @join.Post.Score - @join.Post.AppointmentDate.ToString("yyyy-MM-dd") @join.Post.TimeStart.ToString("HH:mm"); - @join.Post.TimeEnd.ToString("HH:mm"); <a href="/Post/JoinDel?joinId=@join.JoinId">ลบ</a></li>
-    }  
-}
-</ol> *@
-
 <link rel="stylesheet" href="~/css/history_join.css">
 <link rel="stylesheet" href="~/css/indexuser.css">
 <link rel="stylesheet" href="~/css/style_global.css">
@@ -51,14 +35,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="status_activity wait">รอเข้าร่วมกิจกรรม</td>
-                        <td><a href="#">อาสาปลูกป่าชายเลน บางปู ...</a></td>
-                        <td>5</td>
-                        <td>09/พ.ย./2567 - 15/พ.ย./2567</td>
-                        <td>08:30 - 15:30</td>
-                        <td><button class="btn cancal">ยกเลิก</button></td>
-                    </tr>
+                    @foreach (Join join in Model){
+                        @if(join.Status == "InProgress"){
+                            <tr>
+                                <td class="status_activity wait">รอเข้าร่วมกิจกรรม</td>
+                                <td><a href="#">@join.Post.Title</a></td>
+                                <td>@join.Post.Score</td>
+                                <td>@join.Post.AppointmentDate.ToString("dd MMMM yyyy", ViewBag.thaiCulture) - @join.Post.AppointmentDateArrive?.ToString("dd MMMM yyyy", ViewBag.thaiCulture)</td>
+                                <td>@join.Post.TimeStart.ToString("hh:mm น.", ViewBag.thaiCulture) - @join.Post.TimeEnd.ToString("hh:mm น.", ViewBag.thaiCulture)</td>
+                                <form asp-action="JoinDel" asp-controller="Post" method="post">
+                                    <input type="hidden" name="joinId" value="@join.JoinId">
+                                    <td><button class="btn cancal" type="submit">ยกเลิก</button></td>
+                                </form>
+                                @* asp-controller="Post" asp-action="JoinDel" asp-route-joinId="@join.JoinId" *@
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
 
@@ -74,13 +66,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    @* <tr>
                         <td class="status_activity done">เข้าร่วมกิจกรรมเสร็จสิ้น</td>
                         <td><a href="#">อาสาปลูกป่าชายเลน บางปู ...</a></td>
                         <td>5</td>
                         <td>09/พ.ย./2567 - 15/พ.ย./2567</td>
                         <td>08:30 - 15:30</td>
-                    </tr>
+                    </tr> *@
+                    @foreach (Join join in Model){
+                        @if(join.Status == "Complete"){
+                            <tr>
+                                <td class="status_activity done">เข้าร่วมกิจกรรมเสร็จสิ้น</td>
+                                <td><a href="#">@join.Post.Title</a></td>
+                                <td>@join.Post.Score</td>
+                                <td>@join.Post.AppointmentDate.ToString("dd MMMM yyyy", ViewBag.thaiCulture) - @join.Post.AppointmentDateArrive?.ToString("dd MMMM yyyy", ViewBag.thaiCulture)</td>
+                                <td>@join.Post.TimeStart.ToString("hh:mm น.", ViewBag.thaiCulture) - @join.Post.TimeEnd.ToString("hh:mm น.", ViewBag.thaiCulture)</td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
         </div>

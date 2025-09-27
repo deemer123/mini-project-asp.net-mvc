@@ -5,6 +5,8 @@ using DemoVolunteer.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
 using System.Text;
+using System.Globalization;
+                        
 
 namespace MyMvcProject.Controllers
 {
@@ -440,11 +442,13 @@ namespace MyMvcProject.Controllers
         // แสดงรายชื่อการเข้าร่วมกิจกรรม ของ User
         public async Task<IActionResult> UserJoinList()
         {
+            CultureInfo thaiCulture = new CultureInfo("th-TH");
             var user = await _userManager.GetUserAsync(User);
             var joins = await _context.Joins
                     .Include(p => p.Post)
                     .Where(p => p.UserId == user.Id)
                     .ToListAsync();
+            ViewBag.thaiCulture = thaiCulture;
             ViewBag.Img = user.ImgURL;
             ViewBag.FullName = user.FullName;
             ViewBag.Phone = user.PhoneNumber;
