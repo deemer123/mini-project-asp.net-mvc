@@ -1,5 +1,5 @@
 @model List<DemoVolunteer.Models.Join>
- 
+
 @* <p>ชื่อ: @ViewBag.FullName</p>
 <p>เลขโทรศัพท์: @ViewBag.Phone</p>
 <p>อีเมล: @ViewBag.Email</p>
@@ -15,6 +15,7 @@
     }  
 }
 </ol> *@
+
 <link rel="stylesheet" href="~/css/history_join.css">
 <link rel="stylesheet" href="~/css/indexuser.css">
 <link rel="stylesheet" href="~/css/style_global.css">
@@ -61,15 +62,6 @@
                 </tbody>
             </table>
 
-@* @if (Model == null || !Model.Any())
-{
-    <p>ยังไม่มีการเข้าร่วมกิจกรรม</p>
-}else{
-    @foreach (Join join in Model){
-        <li>@join.Status - @join.Post.Title - @join.Post.Score - @join.Post.AppointmentDate.ToString("yyyy-MM-dd") @join.Post.TimeStart.ToString("HH:mm"); - @join.Post.TimeEnd.ToString("HH:mm"); <a href="/Post/JoinDel?joinId=@join.JoinId">ลบ</a></li>
-    }  
-} *@
-
             <table>
                 <thead>
                     <th class="headtable" colspan="5">ประวัติจิตอาสาที่เข้าร่วม</th>
@@ -91,7 +83,7 @@
                     </tr>
                 </tbody>
             </table>
-
         </div>
     </div>
 </main>
+

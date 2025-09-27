@@ -1,13 +1,25 @@
-@* @model List<Notification> *@
 @model List<DemoVolunteer.Models.Notification>
+<link rel="stylesheet" href="~/css/nav.css" />
+<link rel="stylesheet" href="~/css/footer.css" />
+<link rel="stylesheet" href="~/css/style_global.css" />
 
-@if (Model == null || Model.Count == 0){
-   <div class="dropdown-item">ไม่มีการแจ้งเตือน</div>
-}else{
-    @foreach (var notify in Model){
-        <div class="dropdown-item">
-            @notify.Message
-            @notify.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+@foreach (var notify in Model)
+{
+    <a  class="notification-item">
+        <div class="status @(notify.IsRead ? "read" : "new")">
+            @(notify.IsRead ? "อ่านแล้ว" : "แจ้งเตือนใหม่!")
         </div>
-    }
+        <div class="date">@notify.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+        <div class="message">@notify.Message</div>
+    </a>
 }
+
+
+
+@* <a href="somepage.html" class="notification-item">
+                                <div class="status new">แจ้งเตือนใหม่!</div>
+                                <div class="date">date</div>
+                                <div class="message">
+                                </div>
+                            </a> 
+                            href="@Url.Action("Index", "Notification")"*@

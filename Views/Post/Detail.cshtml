@@ -1,6 +1,28 @@
 @model DemoVolunteer.Models.Post
+<link rel="stylesheet" href="~/css/detail.css" />
+@* <img src="@Model.ImgURL" alt="post-pic" width="500px">
+<h1>@Model.Title</h1>
+<p>สถานที่ :@Model.Location</p>
+<p>เวลากิจกรรม :@Model.AppointmentDate.ToString("dd-MM-yyyy") เวลา @Model.TimeStart.ToString("hh:mm tt") - @Model.TimeEnd.ToString("hh:mm tt")</p>
+<p>ชั่วโมงกิจกรรม :@Model.Score</p>
+<p>ประเภทกิจกรรม :@Model.Category.Name</p>
+<p>ผู้จัด : :@Model.Owner.FullName</p>
+<p>ติดต่อ : :@Model.Owner.PhoneNumber</p>
 
-@* <form method="POST" asp-action="Join">
+<hr>
+
+<h2>เปิดรับ @Model.Joins.Count/@Model.MaxParticipants</h2>
+
+<p>รายละเอียดกิจกรมม</p>
+<p>@Model.Description</p>
+
+@if(Model.AppointImg != null){
+    <img id="preview2" src=@Model.AppointImg alt="Image Preview" width="500" height="600" style="display: block;">
+}
+
+<p>เวลาปิดโพสต์กิจกรรม: @(Model.AppointmentDateEnd.HasValue ? Model.AppointmentDateEnd.Value.ToString("dd-MM-yyyy") : "")</p>
+
+<form method="POST" asp-action="Join">
     <input type="hidden" name="postId" value=@Model.PostId>
     @if(Model.Status == "Open"){
         <button type="submit">เข้าร่วมจิตอาสา</button>
@@ -14,33 +36,23 @@
     else if(Model.Status == "Expired"){
         <button type="submit" disabled>โพสต์หมดอายุแล้ว</button>
     }
+    .ToString("ddddที่ dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH"))
 </form> *@
-
-<link rel="stylesheet" href="~/css/indexuser.css">
-<link rel="stylesheet" href="~/css/detail.css">
-<link rel="stylesheet" href="~/css/style_global.css">
-<link rel="icon" href="https://s.imgz.io/2025/09/08/download-1f4108ab663ec19eb.png" type="image/png">
 
 
 <main>
     <div class="content">
         <div class="main-layer">
             <div class="l1">
-                @* <img src="@Model.ImgURL" alt="img"> *@
-                @if(Model.ImgURL != null){
-                    <img src="@Model.ImgURL" alt="img">
-                }else{
-                    <img src="~/img/default-post-pic.jpg" alt="img">
-                }
+                <img src="@Model.ImgURL" alt="img">
             </div>
             <div class="l2">
                 <div class="text">
                     <h2>@Model.Title</h2>
-                    <p><span class="hightlight">สถานที่:</span> @Model.Location</p>
-                    <p><span class="hl-black">เวลาจัดกิจกรรม :</span> @Model.AppointmentDate.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("th-TH")) 
-                        ถึง @Model.AppointmentDateArrive?.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("th-TH")) 
-                    เวลา @Model.TimeStart.ToString("hh:mm tt") - @Model.TimeStart.ToString("hh:mm tt")</p>
-                    <p><span class="hl-black">ได้รับชั่วโมงกิจกรรม :</span> <span class="hl-blue">@Model.Score</span></p>
+                    <p><span class="hightlight">สถานที่:</span> @Model.Location </p>
+                    <p><span class="hl-black">เวลาจัดกิจกรรม :</span> @Model.TimeStart.ToString("hh:mm น.") @Model.AppointmentDate.ToString("วันที่ dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH")) เวลา
+                         - @Model.TimeEnd.ToString("hh:mm น.") @Model.TimeEnd.ToString("วันที่ dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH"))</p>
+                    <p><span class="hl-black">ได้รับชั่วโมงกิจกรรม :</span> <span class="hl-blue">@Model.Score ชม.</span></p>
                     <p><span class="hl-black">ประเภทกิจกรรม :</span> @Model.Category.Name</p>
                     <p><span class="hl-black">ผู้จัด :</span> @Model.Owner.FullName</p>
                     <p><span class="hl-black">ติดต่อผู้จัดกิจกรรม :</span> @Model.Owner.PhoneNumber</p>
@@ -65,7 +77,7 @@
             </div>
 
             <div class="progress-container">
-                <div class="progress-label" id="progressText">เปิดรับ @Model.Joins.Count/@Model.MaxParticipants ตำแหน่ง</div>
+                <div class="progress-label" id="progressText">เปิดรับ 20/50 ตำแหน่ง</div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
@@ -73,22 +85,18 @@
 
             <div class="l3">
                 <p><span class="hl-black">รายละเอียดกิจกรรม :</span></p>
-                <p>@Model.Description</p>
+                <p> </p>
             </div>
             <div class="l4">
                 <h4>รูปภาพกิจกรรม</h4>
             </div>
-            @if(Model.AppointImg != null){
-                <div class="l5">
-                    <img src="https://plus.unsplash.com/premium_photo-1667861381787-62809f85ce65?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyOXx8fGVufDB8fHx8fA%3D%3D"
+            <div class="l5">
+                <img src="https://plus.unsplash.com/premium_photo-1667861381787-62809f85ce65?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyOXx8fGVufDB8fHx8fA%3D%3D"
                     alt="img">
-                </div>
-                @* <img id="preview2" src=@Model.AppointImg alt="ImagePreview"> *@
-            }
-            <p>เวลาปิดโพสต์กิจกรรม: @(Model.AppointmentDateEnd.HasValue ? Model.AppointmentDateEnd.Value.ToString("dd-MM-yyyy") : "")</p>         
+            </div>
         </div>
     </div>
 </main>
 
 
-
+<script src="~/js/progress.js"></script>

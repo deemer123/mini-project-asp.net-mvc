@@ -50,7 +50,7 @@ public class UserController : Controller
             // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
             TempData["PopupMessage"] = "สมัครสมาชิกสำเร็จ!";
             TempData["PopupType"] = "success"; // success, error, inf
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "User");
         }
         foreach (var error in result.Errors)
         {

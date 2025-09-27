@@ -52,20 +52,8 @@
                         <div class="dropdown-content1" id="menu-notice">
                             <h2 class="head">การแจ้งเตือน</h2>
                             <hr>
-                            <a href="somepage.html" class="notification-item">
-                                <div class="status new">แจ้งเตือนใหม่!</div>
-                                <div class="date">09/พ.ย/2568</div>
-                                <div class="message">
-                                    ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่
-                                </div>
-                            </a>
-                            <a href="somepage.html" class="notification-item">
-                                <div class="status">แจ้งเตือนใหม่!</div>
-                                <div class="date">09/พ.ย/2568</div>
-                                <div class="message">
-                                    ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่ยินดีต้อนรับสมาชิกใหม่
-                                </div>
-                            </a>
+                            @await Component.InvokeAsync("Notification")
+
                         </div>
                     </div>
 
@@ -80,15 +68,15 @@
 
                         <div class="dropdown-content" id="menu-profile">
 
-                        @{
-                            var currentUser = await UserManager.GetUserAsync(User);
-                            var fullName = currentUser?.FirstName + " " + currentUser?.LastName;
-                        }   
-                            <p>@fullName</p>
+                            @{
+                                var currentUser = await UserManager.GetUserAsync(User);
+                                var fullName = currentUser?.FirstName + " " + currentUser?.LastName;
+                            }
+                            <p>ชื่อผู้ใช้: @fullName</p>
                             <a asp-controller="User" asp-action="Edit">แก้ไขข้อมูลส่วนตัว</a>
                             <a asp-controller="Post" asp-action="UserJoinList">จิตอาสาที่จะเข้าร่วม</a>
                             <a asp-controller="Post" asp-action="UserJoinList">ประวัติจิตอาสา</a>
-                            <a asp-controller="User" asp-action="Logout">ออกจากระบบ</a>
+                            <a asp-controller="User" asp-action="Logout" class="logout">ออกจากระบบ</a>
                         </div>
                     </div>
                 </div>
