@@ -81,7 +81,19 @@
                                             data-confirm-title="ยืนยันการยกเลิก" data-ok-text="ยืนยัน" data-cancel-text="ปิด"
                                             asp-controller="Post" asp-action="Delete"
                                             asp-route-postId="@post.PostId">ลบโพสต์</a></td>
-                                    <td><a class="btn join" id="toggleBtn">เปิดรับสมัคร</a></td>
+                                    @if (post.Status == "Open")
+                                    {
+                                        <td><a class="btn join" asp-controller="Post" asp-action="Close" asp-route-postId="@post.PostId">เปิดรับสมัคร</a></td>
+                                    }
+                                    else if (post.Status == "Close")
+                                    {
+                                        <td><a class="btn join" asp-controller="Post" asp-action="Close" asp-route-postId="@post.PostId">ปิดรับสมัคร</a></td>
+                                    }
+                                    else if (post.Status == "Full"){
+                                        <td><a class="btn join">สมาชิกเต็ม</a></td>
+                                    }
+                                    }
+                                    @* <td><a class="btn join" id="toggleBtn" asp-controller="Post" asp-action="Close" asp-route-postId="@post.PostId">เปิดรับสมัคร</a></td> *@
                                 </tr>
                             
                 }

@@ -64,13 +64,13 @@
                             <button class="btn join" type="submit">เข้าร่วมจิตอาสา</button>
                         }
                         else if(Model.Status == "Full"){
-                            <button class="btn join" type="submit" disabled>สมาชิกเต็ม</button>
+                            <button class="btn disabled" type="submit" disabled>สมาชิกเต็ม</button>
                         }
-                        else if(Model.Status == "Closed"){
-                            <button  class="btn join" type="submit" disabled>ปิดการรับสมาชิก</button>
+                        else if(Model.Status == "Close"){
+                            <button  class="btn disabled" type="submit" disabled>ปิดการรับสมาชิก</button>
                         }
                         else if(Model.Status == "Expired"){
-                            <button class="btn join" type="submit" disabled>โพสต์หมดอายุแล้ว</button>
+                            <button class="btn disabled" type="submit" disabled>โพสต์หมดอายุแล้ว</button>
                         }
                     </form>                    
                 </div>

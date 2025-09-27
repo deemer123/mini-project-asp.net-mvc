@@ -156,7 +156,6 @@ namespace MyMvcProject.Controllers
             var joins = await _context.Joins
                 .Where(p => p.PostId == postId)
                 .ToListAsync();
-
             return View(post);
         }
 
@@ -341,11 +340,11 @@ namespace MyMvcProject.Controllers
                 return Redirect($"/Post/Detail?postId={postId}");
             }
             // Post เต็ม
-            if (joins.Count == post.MaxParticipants)
+            if (joins.Count + 1 >= post.MaxParticipants)
             {
-                TempData["PopupMessage"] = "สมาชิกเต็มแล้ว!!!";
-                TempData["PopupType"] = "error";
-                return Redirect($"/Post/Detail?postId={postId}");
+                post.Status = "Full";
+                await _context.SaveChangesAsync();
+                // return Redirect($"/Post/Detail?postId={postId}");
             }
             // สร้าง new Join model 
             var join = new Join
@@ -412,6 +411,7 @@ namespace MyMvcProject.Controllers
         }
 
         // ลบสมาชิกออกจากกิจกรรม
+        [HttpPost]
         public async Task<IActionResult> JoinDel(int joinId)
         {
             // ลบ Join
@@ -420,6 +420,12 @@ namespace MyMvcProject.Controllers
                 .Include(p => p.Post)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(p => p.JoinId == joinId);
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == join.PostId);
+            if (post.Status == "Full")
+            {
+                post.Status = "Open";
+                await _context.SaveChangesAsync();
+            }
             _context.Joins.Remove(join);
             await _context.SaveChangesAsync();
 
@@ -460,11 +466,18 @@ namespace MyMvcProject.Controllers
         public async Task<IActionResult> Close(int postId)
         {
             var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postId);
-            post.Status = "Close";
+            if (post.Status == "Open")
+            {
+                post.Status = "Close";
+            }
+            else
+            {
+                post.Status = "Open";
+            }
             await _context.SaveChangesAsync();
             // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
-            TempData["PopupMessage"] = $"ปิดการรับสมาชิกแล้ว!!";
-            TempData["PopupType"] = "success"; // success, error, inf
+            // TempData["PopupMessage"] = $"ปิดการรับสมาชิกแล้ว!!";
+            // TempData["PopupType"] = "success"; // success, error, inf
             return Redirect("/Post/Manager");
         }
 
@@ -509,7 +522,10 @@ namespace MyMvcProject.Controllers
                 membertHtml.AppendLine($"<td>{join.User.PhoneNumber}</td>");
                 membertHtml.AppendLine($"<td><p class='gender' data-gender='male'>{join.User.Gender}</p></td>");
                 membertHtml.AppendLine($"<td>");
-                membertHtml.AppendLine($"<button class='btn cancal' data-confirm='คุณต้องการลบสมาชิกที่คุณเลือก ใช่ไหม?' data-confirm-title='ยืนยันการลบสมาชิก' data-ok-text='ยืนยัน' data-cancel-text='ปิด'>ลบสมาชิก</button>");
+                membertHtml.AppendLine($"<form asp-action='JoinDel' asp-controller='Post' method='post'>");
+                membertHtml.AppendLine($"<input type='hidden' name='joinId' value='{join.JoinId}'>");
+                membertHtml.AppendLine($"<button class='btn cancal' data-confirm='คุณต้องการลบสมาชิกที่คุณเลือก ใช่ไหม?' data-confirm-title='ยืนยันการลบสมาชิก' data-ok-text='ยืนยัน' data-cancel-text='ปิด' type='submit'>ลบสมาชิก</button>");
+                membertHtml.AppendLine($"</form>");
                 membertHtml.AppendLine($"</td>");
                 membertHtml.AppendLine($"</tr>");
             }
