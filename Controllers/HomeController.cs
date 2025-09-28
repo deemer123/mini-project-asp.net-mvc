@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
 using DemoVolunteer.Data;
+using MyMvcProject.Controllers;
 
 namespace DemoVolunteer.Controllers;
 
@@ -22,6 +23,7 @@ public class HomeController : Controller
     //หน้าแรกแสดงโพสทั้งหมด
     public async Task<IActionResult> Index(int? categorieId) //เพิ่มพารามิเตอร์
     {
+        UpdateExpiredPosts(); // เรียกใช้ function อัพเดทสถานะโพสต์ที่หมดอายุ
         if (User.Identity.IsAuthenticated)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -29,8 +31,7 @@ public class HomeController : Controller
             ViewBag.Gender = user.Gender;
             ViewBag.PhoneNumber = user.PhoneNumber;
             ViewBag.Email = user.Email;
-        }
-
+        } 
         //ส่งข้อมูล Categories ไปที่ View ผ่าน ViewBag //แก้ไขการ filter หมวดหมู่
         ViewBag.Categories = _context.Categories.ToList();
         IQueryable<Post> query = _context.Posts.Include(p => p.Owner).Where(p => p.IsActive == true);
@@ -55,6 +56,40 @@ public class HomeController : Controller
                 .Where(p => p.IsActive == true)
                 .ToListAsync();
         return View(posts);
+    }
+
+
+    public void UpdateExpiredPosts()
+    {
+        // ดึงโพสต์ที่หมดอายุ
+        var expiredPosts = _context.Posts
+            .Where(p => p.Status != "Expired" && p.AppointmentDateEnd <= DateTime.Now)
+            .ToList();
+
+        if (expiredPosts.Any())
+        {
+            foreach (var post in expiredPosts)
+            {
+                // เปลี่ยนสถานะโพสต์
+                post.Status = "Expired";
+
+                // ดึง join ที่เกี่ยวข้องแล้วอัปเดตสถานะ
+                var joins = _context.Joins
+                    .Include(j => j.User) // include User เพื่อให้ EF track คะแนน
+                    .Where(j => j.PostId == post.PostId)
+                    .ToList();
+                if (joins.Any())
+                {
+                    foreach (var join in joins)
+                    {
+                        join.Status = "Complete";
+                        join.User.Score += post.Score;
+                    }
+                }
+            }
+            // SaveChanges ครั้งเดียว
+            _context.SaveChanges();
+        }
     }
 
 

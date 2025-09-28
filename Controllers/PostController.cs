@@ -503,14 +503,14 @@ namespace MyMvcProject.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "html", "viewmember.html");
 
             // อ่านเนื้อหา HTML จากไฟล์
-            var htmlTemplate  = System.IO.File.ReadAllText(filePath);
+            var htmlTemplate = System.IO.File.ReadAllText(filePath);
 
-            var joins =  await _context.Joins
+            var joins = await _context.Joins
                 .Include(p => p.User)
                 .Where(p => p.PostId == postId)
                 .ToListAsync();
-            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postId); 
-            
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postId);
+
             // สร้าง HTML สำหรับแต่ละ post
             var membertHtml = new StringBuilder();
             int i = 0;
@@ -533,11 +533,12 @@ namespace MyMvcProject.Controllers
             // แทนที่ {{MenberList}} ด้วย HTML ที่สร้างจาก loop
             // htmlTemplate.Replace("{{joinCount}}", $"{joins.Count} / {post.MaxParticipants}");
             var finalHtml = htmlTemplate.Replace("{{MenberList}}", membertHtml.ToString());
-            
-   
+
+
             // ส่งกลับ HTML
             return Content(finalHtml, "text/html");
         }
-        
+
+
     }
 }
