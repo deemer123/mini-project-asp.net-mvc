@@ -66,16 +66,9 @@
                 ผู้จัด: @post.Owner.FullName
             </p>
             <div>
-                @if (User.Identity.IsAuthenticated)
-                {
-                   <div>
-                        <a asp-controller="Post" asp-action="Detail" asp-route-postId="@post.PostId" class="btn join ">เข้าร่วม</a>
-                    </div>
-                }
-                else
-                {
-                    <div><a class="btn join " asp-controller="User" asp-action="Login">เข้าร่วม</a></div>
-                }
+                <div>
+                    <a asp-controller="Post" asp-action="Detail" asp-route-postId="@post.PostId" class="btn join ">เข้าร่วม</a>
+                </div>
             </div>
         </div>
     }
@@ -90,8 +83,6 @@
             </div>
     </div>
     </div>
-
-
 </main>
 
 @* <script src="~/js/index.js"></script>

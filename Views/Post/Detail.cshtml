@@ -1,44 +1,5 @@
 @model DemoVolunteer.Models.Post
 <link rel="stylesheet" href="~/css/detail.css" />
-@* <img src="@Model.ImgURL" alt="post-pic" width="500px">
-<h1>@Model.Title</h1>
-<p>สถานที่ :@Model.Location</p>
-<p>เวลากิจกรรม :@Model.AppointmentDate.ToString("dd-MM-yyyy") เวลา @Model.TimeStart.ToString("hh:mm tt") - @Model.TimeEnd.ToString("hh:mm tt")</p>
-<p>ชั่วโมงกิจกรรม :@Model.Score</p>
-<p>ประเภทกิจกรรม :@Model.Category.Name</p>
-<p>ผู้จัด : :@Model.Owner.FullName</p>
-<p>ติดต่อ : :@Model.Owner.PhoneNumber</p>
-
-<hr>
-
-<h2>เปิดรับ @Model.Joins.Count/@Model.MaxParticipants</h2>
-
-<p>รายละเอียดกิจกรมม</p>
-<p>@Model.Description</p>
-
-@if(Model.AppointImg != null){
-    <img id="preview2" src=@Model.AppointImg alt="Image Preview" width="500" height="600" style="display: block;">
-}
-
-<p>เวลาปิดโพสต์กิจกรรม: @(Model.AppointmentDateEnd.HasValue ? Model.AppointmentDateEnd.Value.ToString("dd-MM-yyyy") : "")</p>
-
-<form method="POST" asp-action="Join">
-    <input type="hidden" name="postId" value=@Model.PostId>
-    @if(Model.Status == "Open"){
-        <button type="submit">เข้าร่วมจิตอาสา</button>
-    }
-    else if(Model.Status == "Full"){
-        <button type="submit" disabled>สมาชิกเต็ม</button>
-    }
-    else if(Model.Status == "Closed"){
-        <button type="submit" disabled>ปิดการรับสมาชิก</button>
-    }
-    else if(Model.Status == "Expired"){
-        <button type="submit" disabled>โพสต์หมดอายุแล้ว</button>
-    }
-    .ToString("ddddที่ dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH"))
-</form> *@
-
 
 <main>
     <div class="content">
@@ -51,8 +12,8 @@
                     <h2>@Model.Title</h2>
                     <p><span class="hightlight">สถานที่:</span> @Model.Location </p>
                     <p><span class="hl-black">เวลาจัดกิจกรรม :</span> @Model.TimeStart.ToString("hh:mm น.") @Model.AppointmentDate.ToString("วันที่ dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH")) เวลา
-                         - @Model.TimeEnd.ToString("hh:mm น.") @Model.TimeEnd.ToString("วันที่ dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH"))</p>
-                    <p><span class="hl-black">เวลาปิดโพสต์กิจกรรม :</span> @Model.AppointmentDateEnd<p>
+                         - @Model.TimeEnd.ToString("hh:mm น.") @Model.AppointmentDateArrive?.ToString("วันที่ dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH"))</p>
+                    <p><span class="hl-black">เวลาปิดโพสต์กิจกรรม :</span> @Model.AppointmentDateEnd?.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH"))<p>
                     <p><span class="hl-black">ได้รับชั่วโมงกิจกรรม :</span> <span class="hl-blue">@Model.Score ชม.</span></p>
                     <p><span class="hl-black">ประเภทกิจกรรม :</span> @Model.Category.Name</p>
                     <p><span class="hl-black">ผู้จัด :</span> @Model.Owner.FullName</p>
@@ -65,13 +26,13 @@
                             <button class="btn join" type="submit">เข้าร่วมจิตอาสา</button>
                         }
                         else if(Model.Status == "Full"){
-                            <button class="btn disabled" type="submit" disabled>สมาชิกเต็ม</button>
+                            <button class="btn disabled" type="submit" style="background-color:orange" disabled>สมาชิกเต็ม</button>
                         }
                         else if(Model.Status == "Close"){
-                            <button  class="btn disabled" type="submit" disabled>ปิดการรับสมาชิก</button>
+                            <button  class="btn disabled" type="submit" style="background-color:gray" disabled>ปิดการรับสมาชิก</button>
                         }
                         else if(Model.Status == "Expired"){
-                            <button class="btn disabled" type="submit" disabled>โพสต์หมดอายุแล้ว</button>
+                            <button class="btn disabled" type="submit" style="background-color:red" disabled>โพสต์หมดอายุแล้ว</button>
                         }
                     </form>                    
                 </div>
@@ -97,7 +58,6 @@
                     alt="img">
                 </div>
             }
-            
         </div>
     </div>
 </main>

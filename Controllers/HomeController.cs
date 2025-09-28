@@ -24,6 +24,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Index(int? categorieId) //เพิ่มพารามิเตอร์
     {
         UpdateExpiredPosts(); // เรียกใช้ function อัพเดทสถานะโพสต์ที่หมดอายุ
+        UpdateAppointmenComplete(); //เรียกใช้ function อัพเดทสถานะโพสต์ที่สิ้นสุดกิจกรรมและแจกคะแนนสมาชิก
         if (User.Identity.IsAuthenticated)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -42,7 +43,7 @@ public class HomeController : Controller
             ViewBag.SelectedCategoryId = categorieId.Value;
         }
 
-        var posts = await query.ToListAsync();
+        var posts = await query.Where(p => p.IsActive == true).ToListAsync();
         return View(posts);
     }
 
@@ -72,6 +73,27 @@ public class HomeController : Controller
             {
                 // เปลี่ยนสถานะโพสต์
                 post.Status = "Expired";
+            }
+        }
+        // SaveChanges ครั้งเดียว
+        _context.SaveChanges();
+    }
+    
+
+    public void UpdateAppointmenComplete()
+    {
+        // ดึงโพสต์ที่หมดอายุ
+        var CompletePosts = _context.Posts
+            .Where(p => p.Status == "Expired" && p.AppointmentDateEnd <= DateTime.Now && p.AppointmentDateArrive <= DateTime.Now)
+            .ToList();
+
+        if (CompletePosts.Any())
+        {
+            foreach (var post in CompletePosts)
+            {
+                // เปลี่ยนสถานะโพสต์
+                post.Status = "Complete";
+                post.IsActive = false;
 
                 // ดึง join ที่เกี่ยวข้องแล้วอัปเดตสถานะ
                 var joins = _context.Joins
