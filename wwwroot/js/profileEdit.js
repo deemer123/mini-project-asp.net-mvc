@@ -1,61 +1,88 @@
+// profileEdit.js
 (function(){
+  // หา elements
   const pic = document.getElementById('avatar');
   const avatarImg = document.getElementById('avatarImg');
-
   const overlay = document.getElementById('avatarOverlay');
-  const fileInput = document.getElementById('avatarFile');  // เปลี่ยนเป็น input file
+  const fileInput = document.getElementById('avatarFile');
   const preview  = document.getElementById('avatarPreview');
   const err      = document.getElementById('avatarError');
   const btnOk    = document.getElementById('avatarConfirm');
   const btnCancel= document.getElementById('avatarCancel');
-  const hidden   = document.getElementById('avatarUrlHidden');          // ⬅️ hidden input
+  const hidden   = document.getElementById('avatarUrlHidden');
   const form     = document.querySelector('.profile-form');
 
-  if(!pic || !overlay || !avatarImg || !hidden || !form) return;
+  // Debug: log if any missing
+  const missing = [];
+  if(!pic) missing.push('avatar');
+  if(!avatarImg) missing.push('avatarImg');
+  if(!overlay) missing.push('avatarOverlay');
+  if(!fileInput) missing.push('avatarFile');
+  if(!preview) missing.push('avatarPreview');
+  if(!err) missing.push('avatarError');
+  if(!btnOk) missing.push('avatarConfirm');
+  if(!btnCancel) missing.push('avatarCancel');
+  if(!hidden) missing.push('avatarUrlHidden');
+  if(!form) missing.push('.profile-form');
 
-  // ตั้งค่าเริ่มต้น = รูปปัจจุบัน (default/เดิม)
-  hidden.value = avatarImg.src;
+  if (missing.length) {
+    console.warn('profileEdit: missing elements ->', missing.join(', '));
+    // don't return: still try to attach partial functionality if possible
+  }
 
-  const open = () => {
-    overlay.hidden = false;
-    err.textContent = '';
-    fileInput.value = '';  // รีเซ็ตค่าไฟล์
-    preview.src = avatarImg.src; // แสดงตัวอย่างเป็นรูปเดิมก่อน
-    setTimeout(()=> fileInput.focus(), 0);
-  };
+  // helper to safely set overlay visible/hidden using class
+  function openOverlay(){
+    if(!overlay) return;
+      overlay.hidden = false;
+      err.textContent = '';
+      fileInput.value = '';  // รีเซ็ตค่าไฟล์
+      preview.src = avatarImg.src; // แสดงตัวอย่างเป็นรูปเดิมก่อน
+      setTimeout(()=> fileInput.focus(), 0);
+  }
+  function closeOverlay(){
+    overlay.hidden = true;
+  }
 
-  const close = () => { overlay.hidden = true; };
+  // attach events if elements exist
+  if(pic) {
+    pic.addEventListener('click', (e)=> {
+      e.preventDefault();
+      console.log("✅ Avatar clicked"); // เพิ่มบรรทัดนี้
+      openOverlay();
+    });
+    pic.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openOverlay(); }
+    });
+  }
 
-  pic.addEventListener('click', open);
-  pic.addEventListener('keydown', e=>{
-    if(e.key === 'Enter' || e.key === ' '){
-      e.preventDefault(); open();
-    }
-  });
-
-  fileInput.addEventListener('change', function() {
-    const file = fileInput.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        preview.src = e.target.result;
-      };
-      reader.onerror = () => {
-        err.textContent = 'ไม่สามารถโหลดไฟล์ได้';
-      };
-      reader.readAsDataURL(file);
-    }
-  });
+  if(fileInput){
+    fileInput.addEventListener('change', function() {
+      const file = fileInput.files && fileInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          if(preview) preview.src = e.target.result;
+        };
+        reader.onerror = () => {
+          if(err) err.textContent = 'ไม่สามารถโหลดไฟล์ได้';
+          console.error('profileEdit: FileReader error');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
 
   function applyFile(){
     const file = fileInput.files[0];
-    if (!file) { close(); return; }
+    if (!file) { closeOverlay(); return; }
 
     const reader = new FileReader();
     reader.onload = function(e) {
       avatarImg.src = e.target.result;   // เปลี่ยนรูปที่แสดง
+      console.log(hidden);
+      console.log(e.target.result);
       hidden.value  = e.target.result;   // ⬅️ อัปเดตค่าที่จะส่งไปกับฟอร์ม
-      close();
+      closeOverlay();
     };
     reader.onerror = () => {
       err.textContent = 'ไม่สามารถโหลดไฟล์ได้';
@@ -63,19 +90,24 @@
     reader.readAsDataURL(file);
   }
 
-  btnOk.addEventListener('click', applyFile);
-  btnCancel.addEventListener('click', close);
+  if(btnOk) btnOk.addEventListener('click', applyFile);
+  if(btnCancel) btnCancel.addEventListener('click', (e) => { e.preventDefault(); closeOverlay(); });
 
-  overlay.addEventListener('click', e=>{ if(e.target === overlay) close(); });
-  overlay.addEventListener('keydown', e=>{
-    if(e.key === 'Escape') close();
-    if(e.key === 'Enter')  applyFile();
-  });
+  if(overlay){
+    overlay.addEventListener('click', e=>{ if(e.target === overlay) closeOverlay(); });
+    overlay.addEventListener('keydown', e=>{
+      if(e.key === 'Escape') closeOverlay();
+      if(e.key === 'Enter') applyFile();
+    });
+  }
 
-  // กันพลาด: ก่อน submit ถ้า hidden ว่าง ให้ใช้รูปที่แสดงอยู่
-  form.addEventListener('submit', ()=>{
-    if(!hidden.value) hidden.value = avatarImg.src;
-  });
+  // before submit ensure hidden has some value (fallback)
+  if(form){
+    form.addEventListener('submit', ()=> {
+      if (hidden && !hidden.value && avatarImg) hidden.value = avatarImg.src || '';
+    });
+  }
+
+  // final debug info
+  console.log('profileEdit: initialized (missing: ' + missing.length + ')');
 })();
-
-

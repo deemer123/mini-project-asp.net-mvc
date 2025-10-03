@@ -37,9 +37,18 @@
         <!-- for select activity -->
 
         <div class="selectbutton">
+            @if(ViewBag.SelectedCategoryId == null){
+                <a class="btn selectionbutton" id="allCategory" asp-controller="Home" asp-action="Index">ทั้งหมด</a>
+            }else{
+                <a class="btn" id="allCategory" asp-controller="Home" asp-action="Index">ทั้งหมด</a>
+            }
             @foreach (var category in @ViewBag.Categories)
             {   //แก้ไขการ filter ตามหมวดหมู่
-                <a class="btn" asp-controller="Home" asp-action="Index" asp-route-categorieId="@category.CategoryId">@category.Name</a>
+                if(category.CategoryId == ViewBag.SelectedCategoryId){
+                    <a class="btn selectionbutton" id="Category-@category.CategoryId" asp-controller="Home" asp-action="Index" asp-route-categorieId="@category.CategoryId">@category.Name</a>
+                }else{
+                    <a class="btn" id="Category-@category.CategoryId" asp-controller="Home" asp-action="Index" asp-route-categorieId="@category.CategoryId">@category.Name</a>
+                }
             }
         </div>
 

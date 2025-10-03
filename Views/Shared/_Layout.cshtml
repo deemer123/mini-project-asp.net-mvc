@@ -40,7 +40,7 @@
                     <a class="btn bg_yellow" asp-controller="Post" asp-action="Manager">เพิ่มกิจกรรมจิตอาสา</a>
 
                     @* notification *@
-                    <div class="dropdown" id="noticeDropdown">
+                    <div class="dropdown" id="noticeDropdown" onclick="markAllAsRead()">
                         <svg class="bell" role="button" aria-haspopup="true" aria-expanded="false"
                             aria-controls="menu-notice" xmlns="http://www.w3.org/2000/svg" viewBox="-4 0 68 64"
                             fill="white">
@@ -53,25 +53,26 @@
                             <h2 class="head">การแจ้งเตือน</h2>
                             <hr>
                             @await Component.InvokeAsync("Notification")
-
                         </div>
                     </div>
-
+                            @{
+                                var currentUser = await UserManager.GetUserAsync(User);
+                                var fullName = currentUser?.FirstName + " " + currentUser?.LastName;
+                                var profileImg = currentUser?.ImgURL;
+                            }
                     <div class="dropdown" id="profileDropdown">
                         <button class="avatar-btn" type="button" aria-haspopup="true" aria-expanded="false"
                             aria-controls="menu-profile">
-                            <img class="avatar-img"
+                            @* <img class="avatar-img"
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHXi6kWCo1P3qJAuOnEAs6jWS1Dg1BqRkk8Q&s"
+                                alt="โปรไฟล์" /> *@
+                             <img class="avatar-img"
+                                src="@profileImg"
                                 alt="โปรไฟล์" />
                             <span class="caret" aria-hidden="true"></span>
                         </button>
 
                         <div class="dropdown-content" id="menu-profile">
-
-                            @{
-                                var currentUser = await UserManager.GetUserAsync(User);
-                                var fullName = currentUser?.FirstName + " " + currentUser?.LastName;
-                            }
                             <p>ชื่อผู้ใช้: @fullName</p>
                             <a asp-controller="User" asp-action="Edit">แก้ไขข้อมูลส่วนตัว</a>
                             <a asp-controller="Post" asp-action="UserJoinList">จิตอาสาที่จะเข้าร่วม</a>
@@ -158,26 +159,6 @@
 <script src="~/js/index.js" defer></script>
 
 
-@* 
-<script>
-    // function เมื่อคลิกดูการแจ้งเตือน
-    function toggleDropdown() {
-        var dropdown = document.getElementById("notificationDropdown");
-        dropdown.style.display = (dropdown.style.display === "none" || dropdown.style.display === "") ? "block" : "none";
-    }
-
-    // Optional: ปิด dropdown เมื่อคลิกนอกพื้นที่
-    document.addEventListener("click", function (event) {
-        var dropdown = document.getElementById("notificationDropdown");
-        var button = event.target.closest("button");
-
-        if (!event.target.closest("#notificationDropdown") && !button) {
-            dropdown.style.display = "none";
-        }
-    });
-</script> *@
-
-
 <script>
     // function แสดง pop up แจ้งข้อความ
     function showPopup(message, type) {
@@ -209,4 +190,42 @@
             popup.remove();
         }, 3000); // แสดง 3 วินาที
     }
+</script>
+
+
+
+<script>
+async function markAllAsRead() {
+    const response = await fetch('/User/MarkAllAsRead', {
+        method: 'POST'
+    });
+
+    if (response.ok) {
+        @* item.classList.remove('fw-bold'); *@
+        document.getElementById('noticeDropdown').classList.remove('has-notification');
+        // ✅ โหลดหน้าใหม่เพื่ออัปเดตสถานะ
+        @* location.reload(); *@
+    } else {
+        alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
+    }
+}
+</script>
+
+
+<script>
+
+fetch("/User/isNewNofic", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"}
+})
+.then(response => response.json())
+.then(data => {
+    if (data.result === true){
+        document.getElementById("noticeDropdown").classList.add('has-notification')
+    } 
+})
+.catch(error => {
+    console.error("Error:", error);
+});
+
 </script>

@@ -65,8 +65,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (Post post in Model)
-                {
+                            @foreach (Post post in Model)
+                            {
                                 <tr>
                                     <td>@post.CreatedAt.ToString()</td>
                                     <td><a asp-controller="Post" asp-action="Detail"asp-route-postId="@post.PostId">@post.Title.</a></td>
@@ -89,17 +89,17 @@
                                     {
                                         <td><a class="btn join" asp-controller="Post" asp-action="Close" asp-route-postId="@post.PostId">ปิดรับสมัคร</a></td>
                                     }
-                                    else if (post.Status == "Full"){
-                                        <td><a class="btn join">สมาชิกเต็ม</a></td>
+                                    else if (post.Status == "Full")
+                                    {
+                                        <td><a class="btn join">กิจกรรมสมาชิกเต็ม</a></td>
                                     }
-                                    else if (post.Status == "Expired"){
+                                    else if (post.Status == "Expired")
+                                    {
                                         <td><a class="btn join">กิจกรรมหมดอายุ</a></td>
-                                    }
                                     }
                                     @* <td><a class="btn join" id="toggleBtn" asp-controller="Post" asp-action="Close" asp-route-postId="@post.PostId">เปิดรับสมัคร</a></td> *@
                                 </tr>
-                            
-                }
+                            }
                         </tbody>
                         </table>
                     </div>

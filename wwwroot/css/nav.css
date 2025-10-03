@@ -198,7 +198,8 @@ svg {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 1;
     border-radius: 5px;
-    overflow: hidden;
+    max-height: 40vh;
+    overflow-y: auto;
     padding: 30px;
     padding-top: 15px;
 }
@@ -239,7 +240,72 @@ svg {
     transform: translateX(4px) translateY(2px) scale(-1.15);
 }
 
+.notification-item {
+    display: flex;
+    justify-content: space-between; /* วางวันที่และข้อความในแถวเดียว */
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-decoration: none; /* ทำให้ลิงก์ไม่แสดงขีดเส้นใต้ */
+    color: inherit; /* ให้ข้อความมีสีเหมือนปกติ */
+    cursor: pointer;
+}
 
+.notification-item:hover {
+    background-color: #e0e0e0; /* เปลี่ยนสีเมื่อ hover */
+}
+
+/* สไตล์สำหรับสถานะใหม่ */
+.notification-item .status.new {
+    background-color: #FF6347; /* สีแดง */
+    color: white;
+    padding: 2px 4px; /* ลดขนาด padding ให้น้อยลง */
+    font-size: 12px; /* ลดขนาดตัวอักษร */
+    border-radius: 5px;
+    display: inline-block; /* ให้ขนาดตามเนื้อหาข้อความ */
+    margin-right: 10px; /* ให้มีช่องว่างขวาของแท็บ */
+    text-align: center; /* กึ่งกลางข้อความ */
+    margin-bottom: 5px;
+}
+.notification-item.new .status.new {
+    visibility: visible; /* แสดงสถานะใหม่ */
+}
+.date {
+    font-size: 14px;
+    color: #007bff; /* สีฟ้า */
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.message {
+    font-size: 16px;
+    color: #333;
+}
+
+/* ถ้าอยากให้ข้อความของการแจ้งเตือนยาวเกินหนึ่งบรรทัดก็สามารถกำหนด max-width */
+.notification-item .date .message {
+    max-width: 40%; /* กำหนดให้ข้อความไม่เกิน 80% ของพื้นที่ */
+    white-space: nowrap; /* ป้องกันการตัดคำ */
+    overflow: hidden;
+    text-overflow: ellipsis; /* ใช้ 3 จุด (...) เมื่อข้อความยาวเกิน */
+}
+
+.dropdown.has-notification{
+    position: relative;
+}
+.dropdown.has-notification::after{
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 12px;
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 50%;
+    border: 2px solid white;
+}
 /* ===== Mobile < 768px ===== */
 @media (max-width: 769px) {
     .avatar-img {
@@ -406,6 +472,3 @@ svg {
         border-radius: 6px;
     }
 }
-/* .notification-item {
-    color: skyblue;
-} */

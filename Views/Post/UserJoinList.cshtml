@@ -39,7 +39,7 @@
                         @if(join.Status == "InProgress"){
                             <tr>
                                 <td class="status_activity wait">รอเข้าร่วมกิจกรรม</td>
-                                <td><a href="#">@join.Post.Title</a></td>
+                                <td><a asp-controller="POst" asp-action="Detail" asp-route-postId="@join.PostId">@join.Post.Title</a></td>
                                 <td>@join.Post.Score</td>
                                 <td>@join.Post.AppointmentDate.ToString("dd MMMM yyyy", ViewBag.thaiCulture) - @join.Post.AppointmentDateArrive?.ToString("dd MMMM yyyy", ViewBag.thaiCulture)</td>
                                 <td>@join.Post.TimeStart.ToString("hh:mm น.", ViewBag.thaiCulture) - @join.Post.TimeEnd.ToString("hh:mm น.", ViewBag.thaiCulture)</td>
@@ -77,7 +77,7 @@
                         @if(join.Status == "Complete"){
                             <tr>
                                 <td class="status_activity done">เข้าร่วมกิจกรรมเสร็จสิ้น</td>
-                                <td><a href="#">@join.Post.Title</a></td>
+                                <td><a asp-controller="POst" asp-action="Detail" asp-route-postId="@join.PostId">@join.Post.Title</a></td>
                                 <td>@join.Post.Score</td>
                                 <td>@join.Post.AppointmentDate.ToString("dd MMMM yyyy", ViewBag.thaiCulture) - @join.Post.AppointmentDateArrive?.ToString("dd MMMM yyyy", ViewBag.thaiCulture)</td>
                                 <td>@join.Post.TimeStart.ToString("hh:mm น.", ViewBag.thaiCulture) - @join.Post.TimeEnd.ToString("hh:mm น.", ViewBag.thaiCulture)</td>

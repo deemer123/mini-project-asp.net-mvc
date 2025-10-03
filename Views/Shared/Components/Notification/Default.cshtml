@@ -1,12 +1,12 @@
 @model List<DemoVolunteer.Models.Notification>
 <link rel="stylesheet" href="~/css/nav.css" />
 <link rel="stylesheet" href="~/css/footer.css" />
-<link rel="stylesheet" href="~/css/style_global.css" />
+<link rel="stylesheet" href="~/css/style_global.css"/>
 
 @foreach (var notify in Model)
 {
     <a  class="notification-item">
-        <div class="status @(notify.IsRead ? "read" : "new")">
+        <div class="status @(notify.IsRead ? "read" : "new")" data-id="@notify.NotificationId">
             @(notify.IsRead ? "อ่านแล้ว" : "แจ้งเตือนใหม่!")
         </div>
         <div class="date">@notify.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
@@ -16,10 +16,5 @@
 
 
 
-@* <a href="somepage.html" class="notification-item">
-                                <div class="status new">แจ้งเตือนใหม่!</div>
-                                <div class="date">date</div>
-                                <div class="message">
-                                </div>
-                            </a> 
-                            href="@Url.Action("Index", "Notification")"*@
+
+

@@ -4,19 +4,21 @@ using DemoVolunteer.Models;
 using DemoVolunteer.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
 
 namespace DemoVolunteer.Controllers;
 
 public class UserController : Controller
 {
-
+    private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
 
     //DB Manager
-    public UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    public UserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
     {
+        _context = context;
         _userManager = userManager;
         _signInManager = signInManager;
     }
@@ -85,8 +87,8 @@ public class UserController : Controller
     {
         await _signInManager.SignOutAsync();
         // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
-            TempData["PopupMessage"] = "ออกจากระบบเรียบร้อย!";
-            TempData["PopupType"] = "success"; // success, error, inf
+        TempData["PopupMessage"] = "ออกจากระบบเรียบร้อย!";
+        TempData["PopupType"] = "success"; // success, error, inf
         return RedirectToAction("Index", "Home");
     }
 
@@ -117,7 +119,7 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(UserViewModel model, IFormFile? imageFile)
+    public async Task<IActionResult> Edit(UserViewModel model, string? imageFile)
     {
         Console.WriteLine($"File : {imageFile}");
         if (!ModelState.IsValid)
@@ -131,24 +133,24 @@ public class UserController : Controller
             return Json(errors);
         }
         var user = await _userManager.GetUserAsync(User);
-        
+
         if (user == null) return RedirectToAction("Login", "User");
-        if (imageFile != null && imageFile.Length > 0)
+
+        if (!string.IsNullOrEmpty(imageFile) && imageFile.Contains(","))
         {
-            // ตั้งชื่อไฟล์เอง เช่น ใช้ชื่อจาก Model หรือเวลาปัจจุบัน
-            var customFileName = $"profile_{user.Id}_" + Path.GetExtension(imageFile.FileName);
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", customFileName);
-            using (var stream = new FileStream(path, FileMode.Create))
-            {
-                await imageFile.CopyToAsync(stream);
-            }
-            // กำหนด ImgURL ใน Model เป็น path สำหรับแสดงภาพ
-            model.ImgURL = "/img/" + customFileName;
+            var base64Data = imageFile.Split(',')[1];
+            var bytes = Convert.FromBase64String(base64Data);
+            var fileName = $"avatar_{user.Id}.png";
+            var savePath = Path.Combine("wwwroot/img", fileName);
+            System.IO.File.WriteAllBytes(savePath, bytes);
+            model.ImgURL = "/img/" + fileName;
         }
         else
         {
             model.ImgURL = user.ImgURL;
+            Console.WriteLine("ไม่มีรูปใหม่ ถูกข้ามการอัปโหลด");
         }
+
         // อัปเดตค่าจากฟอร์ม
         user.FirstName = model.FirstName;
         user.LastName = model.LastName;
@@ -165,7 +167,7 @@ public class UserController : Controller
             // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
             TempData["PopupMessage"] = "แก้ไขข้อมูลสำเร็จ!";
             TempData["PopupType"] = "success"; // success, error, inf
-            return RedirectToAction("Edit","User");
+            return RedirectToAction("Edit", "User");
         }
         // ถ้ามี error
         foreach (var error in result.Errors)
@@ -175,4 +177,41 @@ public class UserController : Controller
         return View(model);
     }
 
+    [HttpPost]
+    public async Task<IActionResult> MarkAllAsRead()
+    {
+        var user = await _userManager.GetUserAsync(HttpContext.User);
+
+        var notifications = await _context.Notifications
+            .Where(n => n.UserId == user.Id && !n.IsRead)
+            .ToListAsync();
+
+        foreach (var n in notifications)
+        {
+            n.IsRead = true;
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "All notifications marked as read" });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> isNewNofic()
+    {
+        bool result = false;
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return View(new List<Notification>());
+        }
+        var notifications = await _context.Notifications
+            .Where(n => n.UserId == user.Id)
+            .Where(n => n.IsRead == false)
+            .ToListAsync();
+        if (notifications.Count > 0)
+        {
+            result = true;
+        }
+        return Json(new { result = result });
+    }
 }

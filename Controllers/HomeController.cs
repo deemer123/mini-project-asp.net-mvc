@@ -84,7 +84,7 @@ public class HomeController : Controller
     {
         // ดึงโพสต์ที่หมดอายุ
         var CompletePosts = _context.Posts
-            .Where(p => p.Status == "Expired" && p.AppointmentDateEnd <= DateTime.Now && p.AppointmentDateArrive <= DateTime.Now)
+            .Where(p => p.Status == "Expired" && p.AppointmentDateEnd <= DateTime.Now && p.AppointmentDateArrive <= DateTime.Now && p.IsActive == true)
             .ToList();
 
         if (CompletePosts.Any())
