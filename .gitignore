@@ -60,10 +60,10 @@ Desktop.ini
 # Ignore publish output
 publish/
 
-*.jpg
-*.png
-*.webp
-*.jfif
+# *.jpg
+# *.png
+# *.webp
+# *.jfif
 
 
 
