@@ -1,6 +1,6 @@
 # Build output
-bin/
-obj/
+# bin/
+# obj/
 
 # User-specific files
 *.user
@@ -26,7 +26,7 @@ packages/
 .nuget/
 
 # Entity Framework
-Migrations/
+# Migrations/
 
 # Static web assets cache
 **/*.dswa.cache.json
@@ -69,6 +69,6 @@ publish/
 
 
 # Ignore SQLite database files
-*.db
-*.db-shm
-*.db-wal
+# *.db
+# *.db-shm
+# *.db-wal
