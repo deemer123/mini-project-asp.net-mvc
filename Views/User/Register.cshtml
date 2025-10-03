@@ -63,6 +63,7 @@
                         <div class="tel">
                             <input type="tel" name="phoneNumber" id="tel" placeholder="เบอร์โทรติดต่อ">
                         </div>
+                        <div asp-validation-summary="All" style="color:red;font-size:15px; margin-left:40px;"></div>
                         <div class="submit">
                             <button class="btn bg_yellow" type="submit">สมัครสมาชิก</button>
                         </div>
@@ -70,7 +71,7 @@
                             <h5>เป็นสมาชิกแล้ว?</h5>
                             <h5 id="login"><a asp-controller="User" asp-action="Login">เข้าสู่ระบบ</a></h5>
                         </div>
-                    </form>
+                    </form> 
                 </div>
             </div>
         </div>

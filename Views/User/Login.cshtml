@@ -17,6 +17,7 @@
                         <div class="password">
                             <input type="password" name="password" id="password" placeholder="รหัสผ่าน">
                         </div>
+                        <div asp-validation-summary="All" style="color:red;font-size:15px; margin-left:40px;"></div>
                         <div class="submit">
                             <button class="btn bg_yellow" type="submit">เข้าสู่ระบบ</button>
                         </div>
@@ -25,6 +26,7 @@
                             <h5 id="register"><a asp-controller="User" asp-action="Register">สมัครสมาชิก</a></h5>
                         </div>
                     </form>
+                    
                 </div>
             </div>
         </div>
