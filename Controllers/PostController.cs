@@ -481,22 +481,6 @@ namespace MyMvcProject.Controllers
             return Redirect("/Post/Manager");
         }
 
-        // // API ที่ส่งข้อมูล Join กลับเป็น JSON
-        // [HttpGet]
-        // public async Task<JsonResult> Members(int? postId)
-        // {
-        //     var joins = await _context.Joins
-        //         .Include(p => p.User)
-        //         .Where(p => p.PostId == postId)
-        //         .ToListAsync();
-
-        //     var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postId);
-        //     ViewBag.joinAmount = joins.Count;
-        //     ViewBag.MaxParticipants = post.MaxParticipants;
-
-        //     return Json(joins);
-        // }
-
         public async Task<IActionResult> Members(int postId)
         {
             // ระบุ path ของไฟล์ HTML
@@ -520,7 +504,14 @@ namespace MyMvcProject.Controllers
                 membertHtml.AppendLine($"<td>{i + 1}</td>");
                 membertHtml.AppendLine($"<td>{join.User.FullName}</td>");
                 membertHtml.AppendLine($"<td>{join.User.PhoneNumber}</td>");
-                membertHtml.AppendLine($"<td><p class='gender' data-gender='male'>{join.User.Gender}</p></td>");
+                if (join.User.Gender == "male")
+                {
+                    membertHtml.AppendLine($"<td><p class='gender' data-gender='male'>{join.User.Gender}</p></td>");
+                }
+                else
+                {
+                    membertHtml.AppendLine($"<td><p class='gender' data-gender='female'>{join.User.Gender}</p></td>");
+                }
                 membertHtml.AppendLine($"<td>");
                 membertHtml.AppendLine($"<form asp-action='JoinDel' asp-controller='Post' method='post'>");
                 membertHtml.AppendLine($"<input type='hidden' name='joinId' value='{join.JoinId}'>");

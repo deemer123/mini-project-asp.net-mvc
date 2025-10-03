@@ -73,7 +73,33 @@ th {
 }
 
 
+.btn.join {
+  background-color: #64C3FE; /* สีฟ้า */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
+/* สีสำหรับปุ่มปิดรับสมัคร */
+.btn.join.closed {
+  background-color: #FF6347; /* สีแดง */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* เพิ่มเอฟเฟกต์ hover สำหรับปุ่มปิดรับสมัคร */
+.btn.join.closed:hover {
+  background-color: #FF4C3A; /* สีแดงอ่อนขึ้นเมื่อ hover */
+}
+
+/* เพิ่มเอฟเฟกต์ active สำหรับปุ่มปิดรับสมัคร */
+.btn.join.closed:active {
+  background-color: #E83B2F; /* สีแดงเข้มขึ้นเมื่อคลิก */
+  transform: scale(0.98); /* ลดขนาดเล็กน้อยเมื่อคลิก */
+}
 table {
   width: 100%;
   border-collapse: collapse;

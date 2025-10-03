@@ -94,33 +94,29 @@
                         <h1>MAPUNSUK</h1>
                     </a>
                 </div>
+                <button class="hamburger" type="button" aria-label="เปิดเมนู" aria-expanded="false"
+                    aria-controls="nav-actions"></button>
                 <div class="button">
                     <a class="btn bg_yellow" asp-controller="User" asp-action="Login">เพิ่มกิจกรรมจิตอาสา</a>
                     <a class="btn bg_white" asp-controller="User" asp-action="Register">สมัครสมาชิกเป็นอาสา</a>
                     <a class="btn bg_blue" asp-controller="User" asp-action="Login">เข้าสู่ระบบ</a>
                 </div>
-                <button class="hamburger" type="button" aria-label="เปิดเมนู" aria-expanded="false"
-                    aria-controls="nav-actions"></button>
             </div>
 
         }
     </nav>
 
-
-    <div>
-        @* แสดง pop up *@
-        @if (TempData["PopupMessage"] != null)
-        {
-            <script>
-                window.onload = function () {
-                    @* showPopup("@TempData["PopupMessage"]", "@TempData["PopupType"]"); *@
-                        showPopup(@Html.Raw(Json.Serialize(TempData["PopupMessage"])), "@TempData["PopupType"]");
-                };
-            </script>
-        }
-        @RenderBody()
-    </div>
-
+    @* แสดง pop up *@
+    @if (TempData["PopupMessage"] != null)
+    {
+        <script>
+            window.onload = function () {
+                @* showPopup("@TempData["PopupMessage"]", "@TempData["PopupType"]"); *@
+                    showPopup(@Html.Raw(Json.Serialize(TempData["PopupMessage"])), "@TempData["PopupType"]");
+            };
+        </script>
+    }
+    @RenderBody()
     <footer>
         <div class="content2">
             <div class="ti2">

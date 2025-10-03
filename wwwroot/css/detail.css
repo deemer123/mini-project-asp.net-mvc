@@ -5,6 +5,10 @@
     font-family: "Inter", sans-serif;
 }
 
+.pre-formatted-text {
+    white-space: pre-wrap; 
+}
+
 main {
     display: flex;
     justify-content: center;

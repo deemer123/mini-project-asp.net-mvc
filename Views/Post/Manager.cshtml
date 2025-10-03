@@ -87,7 +87,7 @@
                                     }
                                     else if (post.Status == "Close")
                                     {
-                                        <td><a class="btn join" asp-controller="Post" asp-action="Close" asp-route-postId="@post.PostId">ปิดรับสมัคร</a></td>
+                                        <td><a class="btn join closed" asp-controller="Post" asp-action="Close" asp-route-postId="@post.PostId">ปิดรับสมัคร</a></td>
                                     }
                                     else if (post.Status == "Full")
                                     {
