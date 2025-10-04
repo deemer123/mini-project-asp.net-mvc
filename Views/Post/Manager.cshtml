@@ -1,4 +1,7 @@
 @model List<DemoVolunteer.Models.Post>
+@{
+    ViewData["Title"] = "ManagePost";
+}
 
 <link rel="stylesheet" href="~/css/managepost.css" />
 <link rel="stylesheet" href="~/css/style_global.css">
@@ -38,7 +41,7 @@
             </div>
 
             <div class="summary-boxes">
-                <div class="box orange">โพสต์สมาชิกอื่น<br><br>@ViewBag.joinAmount</div>
+                <div class="box orange">โพสต์สมาชิกอื่น<br><br>@ViewBag.allPostAmount</div>
                 <div class="box green">โพสต์ของฉัน<br><br>@Model.Count</div>
                 <div class="box blue">โพสต์ทั้งหมด<br><br>@ViewBag.postAmount</div>
             </div>
@@ -46,7 +49,25 @@
                         class="btn bg_yellow">เพิ่มโพสต์</button></a></div>
             @if (Model == null || !Model.Any())
             {
-                <div>ยังไม่มีโพสต์</div>
+                <div class="layer-2">
+                        <table>
+                            <thead>
+                                <th class="headtable" colspan="5">รายการจิตอาสาที่ฉันสร้าง</th>
+                                <tr>
+                                    <th>วันที่สร้าง</th>
+                                    <th>งานอาสา</th>
+                                    <th>จำนวนรับ</th>
+                                    <th>ดูสมาชิก</th>
+                                    <th>แก้ไขโพสต์</th>
+                                    <th>ลบโพสต์</th>
+                                    <th>สถานะรับสมัคร</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                
             }
             else
             {
@@ -65,6 +86,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            
                             @foreach (Post post in Model)
                             {
                                 <tr>
@@ -75,8 +97,7 @@
                                     <td><a class="btn view-members" 
                                             data-href="/Post/Members?postId=@post.PostId">ดูสมาชิก</a></td>
                                             @* data-href="viewmember.html">ดูสมาชิก</a></td> *@
-                                    <td><a class="btn bg_blue" asp-controller="Post" asp-action="Edit" asp-route-postId="
-                                            @post.PostId">แก้ไขโพสต์</a></td>
+                                    <td><a class="btn bg_blue" asp-controller="Post" asp-action="Edit" asp-route-postId="@post.PostId">แก้ไขโพสต์</a></td>
                                     <td><a class="btn cancal" data-confirm="คุณต้องการลบโพสต์ที่คุณสร้าง ใช่ไหม?"
                                             data-confirm-title="ยืนยันการยกเลิก" data-ok-text="ยืนยัน" data-cancel-text="ปิด"
                                             asp-controller="Post" asp-action="Delete"
@@ -100,6 +121,7 @@
                                     @* <td><a class="btn join" id="toggleBtn" asp-controller="Post" asp-action="Close" asp-route-postId="@post.PostId">เปิดรับสมัคร</a></td> *@
                                 </tr>
                             }
+                         
                         </tbody>
                         </table>
                     </div>

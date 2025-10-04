@@ -64,15 +64,19 @@ public class HomeController : Controller
     {
         // ดึงโพสต์ที่หมดอายุ
         var expiredPosts = _context.Posts
-            .Where(p => p.Status != "Expired" && p.AppointmentDateEnd <= DateTime.Now)
+            .Where(p => p.AppointmentDateEnd <= DateTime.Now && p.IsActive == true)
             .ToList();
 
         if (expiredPosts.Any())
         {
             foreach (var post in expiredPosts)
             {
-                // เปลี่ยนสถานะโพสต์
-                post.Status = "Expired";
+                if (post.AppointmentDateEnd != null || post.Status == "Expired")
+                {
+                    // เปลี่ยนสถานะโพสต์
+                    post.IsActive = false;
+                    post.Status = "Expired";
+                }
             }
         }
         // SaveChanges ครั้งเดียว

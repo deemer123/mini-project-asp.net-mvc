@@ -8,9 +8,10 @@ document.querySelector('.edit-button').addEventListener('click', function() {
 });
 
 document.getElementById('activity_imgCancel').addEventListener('click', function() {
-  // กดยกเลิก: รีเซ็ตค่า src กลับไปเป็นค่าภาพเดิม
   const currentImage = document.querySelector('.addpost-image');
-  currentImage.src = previousImageSrc;  // ใช้ค่า src เดิมที่เก็บไว้
+  const imageFileInput = document.getElementById('activity_imgFile');
+  imageFileInput.value = "";
+  currentImage.src = previousImageSrc;
   document.getElementById('activity_imgOverlay').classList.remove('active');
 });
 

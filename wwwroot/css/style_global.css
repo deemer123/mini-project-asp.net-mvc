@@ -55,6 +55,10 @@ body {
 main {
     flex: 1 0 auto;
     background-color: #faf8f8;
+    background-image: url("https://img5.pic.in.th/file/secure-sv1/255cef174d4302d97.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 footer {

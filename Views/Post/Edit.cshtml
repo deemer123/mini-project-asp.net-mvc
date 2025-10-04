@@ -93,7 +93,7 @@
 
                 <div class="full-width">
                     <label>รายละเอียดกิจกรรม</label>
-                    <textarea asp-for="Description" placeholder="textarea" value=@Model.Description></textarea>
+                    <textarea asp-for="Description" placeholder="พิมพ์รายละเอียดกิจกรรมของคุณ..." value=@Model.Description></textarea>
                 </div>
 
                 <div class="full-width">
@@ -101,7 +101,7 @@
                     <input type="file" id="imageInput2" accept="image/*" name="imageFile2"/>
                 </div>
                 @if(Model.AppointImg != null){
-                    <img id="preview2" src=@Model.AppointImg alt="Image Preview" width="500" height="600" style="display: block;">
+                    <img class='addpost-image' id="preview2" src=@Model.AppointImg alt="Image Preview">
                 }
 
 

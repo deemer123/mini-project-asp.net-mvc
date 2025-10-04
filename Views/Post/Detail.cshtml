@@ -1,18 +1,25 @@
 @model DemoVolunteer.Models.Post
+@{
+    ViewData["Title"] = "PostDetail";
+}
 <link rel="stylesheet" href="~/css/detail.css" />
 
 <main>
     <div class="content">
         <div class="main-layer">
             <div class="l1">
-                <img src="@Model.ImgURL" alt="img">
+                @if(Model.ImgURL == null){
+                    <img src="https://img5.pic.in.th/file/secure-sv1/380474ef7dd450673.png" alt="img">
+                }else{
+                    <img src="@Model.ImgURL" alt="img">
+                }
             </div>
             <div class="l2">
                 <div class="text">
                     <h2>@Model.Title</h2>
                     <p><span class="hightlight">สถานที่:</span> @Model.Location </p>
-                    <p><span class="hl-black">เวลาจัดกิจกรรม :</span> @Model.TimeStart.ToString("hh:mm น.") @Model.AppointmentDate.ToString("วันที่ dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH")) เวลา
-                         - @Model.TimeEnd.ToString("hh:mm น.") @Model.AppointmentDateArrive?.ToString("วันที่ dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH"))</p>
+                    <p><span class="hl-black">เวลาจัดกิจกรรม :</span> @Model.TimeStart.ToString("hh:mm น.") - @Model.TimeEnd.ToString("hh:mm น.") @Model.AppointmentDate.ToString("วันที่ dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH")) -
+                        @Model.AppointmentDateArrive?.ToString("วันที่ dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH"))</p>
                     <p><span class="hl-black">เวลาปิดโพสต์กิจกรรม :</span> @Model.AppointmentDateEnd?.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH"))<p>
                     <p><span class="hl-black">ได้รับชั่วโมงกิจกรรม :</span> <span class="hl-blue">@Model.Score ชม.</span></p>
                     <p><span class="hl-black">ประเภทกิจกรรม :</span> @Model.Category.Name</p>

@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DemoVolunteer</title>
+    <title>@ViewData["Title"]</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/css/nav.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
@@ -40,7 +40,7 @@
                     <a class="btn bg_yellow" asp-controller="Post" asp-action="Manager">เพิ่มกิจกรรมจิตอาสา</a>
 
                     @* notification *@
-                    <div class="dropdown" id="noticeDropdown" onclick="markAllAsRead()">
+                    <div class="dropdown" id="noticeDropdown">
                         <svg class="bell" role="button" aria-haspopup="true" aria-expanded="false"
                             aria-controls="menu-notice" xmlns="http://www.w3.org/2000/svg" viewBox="-4 0 68 64"
                             fill="white">
@@ -49,8 +49,17 @@
                             <path d="M54 26l6 8 6-8z"
                                 transform="translate(60 28.6667) scale(1.15) translate(-60 -28.6667)" />
                         </svg>
-                        <div class="dropdown-content1" id="menu-notice">
+                        @* <div class="dropdown-content1" id="menu-notice">
                             <h2 class="head">การแจ้งเตือน</h2>
+                            <hr>
+                            @await Component.InvokeAsync("Notification")
+                        </div> *@
+                        <div class="dropdown-content1" id="menu-notice">
+                            <div class="notice-header">
+                                <h2 class="head">การแจ้งเตือน</h2>
+                                <a href="#" id="markAsReadBtn"
+                                    onclick="event.preventDefault(); markAllAsRead();">อ่านทั้งหมด</a>
+                            </div>
                             <hr>
                             @await Component.InvokeAsync("Notification")
                         </div>
@@ -188,40 +197,36 @@
     }
 </script>
 
-
-
 <script>
-async function markAllAsRead() {
-    const response = await fetch('/User/MarkAllAsRead', {
-        method: 'POST'
-    });
+    let notificationsMarkedThisSession = false;
+    async function markAllAsRead() {
+        const response = await fetch('/User/MarkAllAsRead', {
+            method: 'POST'
+        });
 
-    if (response.ok) {
-        @* item.classList.remove('fw-bold'); *@
-        document.getElementById('noticeDropdown').classList.remove('has-notification');
-        // ✅ โหลดหน้าใหม่เพื่ออัปเดตสถานะ
-        @* location.reload(); *@
+        if (response.ok) {
+            @* item.classList.remove('fw-bold'); *@
+                document.getElementById('noticeDropdown').classList.remove('has-notification');
+            // ✅ โหลดหน้าใหม่เพื่ออัปเดตสถานะ
+            @* location.reload(); *@
     } else {
-        alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
+            alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
+        }
     }
-}
-</script>
+    const noticeDropdown = document.getElementById('noticeDropdown');
 
-
-<script>
-
-fetch("/User/isNewNofic", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"}
-})
-.then(response => response.json())
-.then(data => {
-    if (data.result === true){
-        document.getElementById("noticeDropdown").classList.add('has-notification')
-    } 
-})
-.catch(error => {
-    console.error("Error:", error);
-});
+    fetch("/User/isNewNofic", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.result === true) {
+                document.getElementById("noticeDropdown").classList.add('has-notification')
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
 
 </script>

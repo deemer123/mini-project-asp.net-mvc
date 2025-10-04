@@ -136,6 +136,12 @@ namespace MyMvcProject.Controllers
             // เพิ่มลงใน DB
             _context.Posts.Add(newPost);
             await _context.SaveChangesAsync();
+
+            // แจ้งเตื่อนเจ้าของ post ว่าได้สร้าง post ใหม่
+            var Newnotify = notificationModel(user.Id, $"คุณได้สร้างกิจกรรม '{newPost.Title}'");
+            _context.Notifications.Add(Newnotify);
+            await _context.SaveChangesAsync();
+
             // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
             TempData["PopupMessage"] = "สร้างโพสสำเร็จ!";
             TempData["PopupType"] = "success"; // success, error, inf
@@ -243,7 +249,13 @@ namespace MyMvcProject.Controllers
             double score = totalDays * totalHours;
             int Score = Convert.ToInt32(score);
 
+
             // อัปเดตค่าจากฟอร์ม
+            if (model.AppointmentDateEnd > DateTime.Now || model.AppointmentDateEnd == null)
+            {
+                post.Status = "Open";
+                post.IsActive = true;
+            }
             post.Title = model.Title;
             post.CategoryId = model.CategoryId;
             post.Location = model.Location;
@@ -360,7 +372,7 @@ namespace MyMvcProject.Controllers
             await _context.SaveChangesAsync();
 
             // แจ้งเตื่อนเจ้าของ post
-            var notifyOwner = notificationModel(post.OwnerId, $"{user.UserName} เข้าร่วมกิจกรรมของคุณในโพสต์ '{post.Title}'");
+            var notifyOwner = notificationModel(post.OwnerId, $"{user.Email} เข้าร่วมกิจกรรมของคุณในโพสต์ '{post.Title}'");
             _context.Notifications.Add(notifyOwner);
             await _context.SaveChangesAsync();
 
@@ -392,8 +404,13 @@ namespace MyMvcProject.Controllers
                 .Include(p => p.Joins)
                 .Where(p => p.Owner.Id == user.Id)
                 .ToListAsync();
-            ViewBag.joinAmount = joins.Count; //จำนวนโพสสมาชิกอื่น
-            ViewBag.postAmount = joins.Count + posts.Count; //จำนวนโพสทั้งหมด
+
+            var allPosts = await _context.Posts
+                .Where(p => p.IsActive == true)
+                .ToListAsync();
+
+            ViewBag.allPostAmount = allPosts.Count; //จำนวนโพสทั้งหมดของสมาชิกอื่น
+            ViewBag.postAmount = allPosts.Count + posts.Count; //จำนวนโพสทั้งหมด
             return View(posts);
         }
 
@@ -430,7 +447,7 @@ namespace MyMvcProject.Controllers
             await _context.SaveChangesAsync();
 
             // แจ้งเตื่อนเจ้าของ post
-            var notifyOwner = notificationModel(join.Post.OwnerId, $"{join.User.FullName} ยกเลิกจากกิจกรรม {join.Post.Title}");
+            var notifyOwner = notificationModel(join.Post.OwnerId, $"{join.User.Email} ยกเลิกจากกิจกรรม {join.Post.Title}");
             _context.Notifications.Add(notifyOwner);
             await _context.SaveChangesAsync();
 
@@ -442,7 +459,7 @@ namespace MyMvcProject.Controllers
             // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
             TempData["PopupMessage"] = $"ยกเลิกจากกิจกรรมแล้ว!!";
             TempData["PopupType"] = "success"; // success, error, inf
-            return Redirect("/Post/Manager");
+            return Redirect("/Post/UserJoinList");
         }
 
         // แสดงรายชื่อการเข้าร่วมกิจกรรม ของ User
@@ -513,21 +530,58 @@ namespace MyMvcProject.Controllers
                     membertHtml.AppendLine($"<td><p class='gender' data-gender='female'>{join.User.Gender}</p></td>");
                 }
                 membertHtml.AppendLine($"<td>");
-                membertHtml.AppendLine($"<form asp-action='JoinDel' asp-controller='Post' method='post'>");
+                membertHtml.AppendLine($"<form action='/Post/MemberDel' method='post'>"); 
                 membertHtml.AppendLine($"<input type='hidden' name='joinId' value='{join.JoinId}'>");
                 membertHtml.AppendLine($"<button class='btn cancal' data-confirm='คุณต้องการลบสมาชิกที่คุณเลือก ใช่ไหม?' data-confirm-title='ยืนยันการลบสมาชิก' data-ok-text='ยืนยัน' data-cancel-text='ปิด' type='submit'>ลบสมาชิก</button>");
                 membertHtml.AppendLine($"</form>");
+
                 membertHtml.AppendLine($"</td>");
                 membertHtml.AppendLine($"</tr>");
+                i = i + 1;
             }
 
             // แทนที่ {{MenberList}} ด้วย HTML ที่สร้างจาก loop
-            // htmlTemplate.Replace("{{joinCount}}", $"{joins.Count} / {post.MaxParticipants}");
-            var finalHtml = htmlTemplate.Replace("{{MenberList}}", membertHtml.ToString());
 
+            var finalHtml = htmlTemplate.Replace("{{joinCount}}", $"{joins.Count} / {post.MaxParticipants}");
+            var finalHtmlV2 = finalHtml.Replace("{{MenberList}}", membertHtml.ToString());
 
             // ส่งกลับ HTML
-            return Content(finalHtml, "text/html");
+            return Content(finalHtmlV2, "text/html");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MemberDel(int joinId) {
+            // ลบ Join
+            var user = await _userManager.GetUserAsync(User);
+            var join = await _context.Joins
+                .Include(p => p.Post)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.JoinId == joinId);
+
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == join.PostId);
+            if (post.Status == "Full")
+            {
+                post.Status = "Open";
+                await _context.SaveChangesAsync();
+            }
+
+            _context.Joins.Remove(join);
+            await _context.SaveChangesAsync();
+
+            // แจ้งเตื่อนเจ้าของ post
+            var notifyOwner = notificationModel(user.Id, $"คุณยกเลิกการเข้าร่วมกิจกรรมของ {join.User.FullName}");
+            _context.Notifications.Add(notifyOwner);
+            await _context.SaveChangesAsync();
+
+            // แจ้งเตื่อน user ที่เข้าร่วมกิจกรรม
+            var notifyUser = notificationModel(join.UserId, $"คุณถูกยกเลิกจากกิจกรรม {join.Post.Title}");
+            _context.Notifications.Add(notifyUser);
+            await _context.SaveChangesAsync();
+
+            // แสดงในข้อความแจ้งเตือนใน pop up ที่ Redirect ไป
+            TempData["PopupMessage"] = $"ลบสมาชิกออกจากกิจกรรมแล้ว!!";
+            TempData["PopupType"] = "success"; // success, error, inf
+            return Redirect("/Post/Manager");
         }
 
 

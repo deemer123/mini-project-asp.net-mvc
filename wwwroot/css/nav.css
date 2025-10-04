@@ -17,6 +17,24 @@ nav {
     z-index: 50;
 }
 
+.notice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 15px;
+    /* เพิ่ม padding ตามความเหมาะสม */
+}
+
+#markAsReadBtn {
+    font-size: 0.8em;
+    color: #007bff;
+    text-decoration: none;
+}
+
+#markAsReadBtn:hover {
+    text-decoration: underline;
+}
+
 svg {
     display: flex;
     justify-content: center;
@@ -308,6 +326,13 @@ svg {
 }
 /* ===== Mobile < 768px ===== */
 @media (max-width: 769px) {
+
+    .dropdown.has-notification::after {
+            top: 5px;
+            left: 40px;
+            right: 0px;
+    }
+    
     .avatar-img {
         width: 40px;
         height: 40px;
