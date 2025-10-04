@@ -45,7 +45,7 @@
                                 <td><a asp-controller="POst" asp-action="Detail" asp-route-postId="@join.PostId">@join.Post.Title</a></td>
                                 <td>@join.Post.Score</td>
                                 <td>@join.Post.AppointmentDate.ToString("dd MMMM yyyy", ViewBag.thaiCulture) - @join.Post.AppointmentDateArrive?.ToString("dd MMMM yyyy", ViewBag.thaiCulture)</td>
-                                <td>@join.Post.TimeStart.ToString("hh:mm น.", ViewBag.thaiCulture) - @join.Post.TimeEnd.ToString("hh:mm น.", ViewBag.thaiCulture)</td>
+                                <td>@join.Post.TimeStart.ToString("HH:mm") น. - @join.Post.TimeEnd.ToString("HH:mm") น.</td>
                                 <form asp-action="JoinDel" asp-controller="Post" method="post">
                                     <input type="hidden" name="joinId" value="@join.JoinId">
                                     <td><button class="btn cancal" type="submit">ยกเลิก</button></td>
@@ -83,7 +83,7 @@
                                 <td><a asp-controller="POst" asp-action="Detail" asp-route-postId="@join.PostId">@join.Post.Title</a></td>
                                 <td>@join.Post.Score</td>
                                 <td>@join.Post.AppointmentDate.ToString("dd MMMM yyyy", ViewBag.thaiCulture) - @join.Post.AppointmentDateArrive?.ToString("dd MMMM yyyy", ViewBag.thaiCulture)</td>
-                                <td>@join.Post.TimeStart.ToString("hh:mm น.", ViewBag.thaiCulture) - @join.Post.TimeEnd.ToString("hh:mm น.", ViewBag.thaiCulture)</td>
+                                <td>@join.Post.TimeStart.ToString("HH:mm") น. - @join.Post.TimeEnd.ToString("HH:mm") น.</td>
                             </tr>
                         }
                     }
