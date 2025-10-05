@@ -32,7 +32,7 @@ public class HomeController : Controller
             ViewBag.Gender = user.Gender;
             ViewBag.PhoneNumber = user.PhoneNumber;
             ViewBag.Email = user.Email;
-        } 
+        }
         //ส่งข้อมูล Categories ไปที่ View ผ่าน ViewBag //แก้ไขการ filter หมวดหมู่
         ViewBag.Categories = _context.Categories.ToList();
         IQueryable<Post> query = _context.Posts.Include(p => p.Owner).Where(p => p.IsActive == true);
@@ -71,7 +71,7 @@ public class HomeController : Controller
         {
             foreach (var post in expiredPosts)
             {
-                if (post.AppointmentDateEnd != null || post.Status == "Expired")
+                if ((post.AppointmentDateEnd != null || post.Status == "Expired") && post.Status != "Complete")
                 {
                     // เปลี่ยนสถานะโพสต์
                     post.IsActive = false;
@@ -82,42 +82,49 @@ public class HomeController : Controller
         // SaveChanges ครั้งเดียว
         _context.SaveChanges();
     }
-    
+
 
     public void UpdateAppointmenComplete()
     {
-        // ดึงโพสต์ที่หมดอายุ
-        var CompletePosts = _context.Posts
-            .Where(p => p.Status == "Expired" && p.AppointmentDateEnd <= DateTime.Now && p.AppointmentDateArrive <= DateTime.Now && p.IsActive == true)
+        // กำหนด List ของสถานะที่ต้องการเปลี่ยนเป็น "Complete"
+        var statusesToComplete = new List<string> { "Open", "Full", "Closed", "Expired" };
+
+        // ดึงโพสต์ที่มีสถานะตรงตาม List และหมดเวลาแล้ว
+        var postsToComplete = _context.Posts
+            .Where(p => statusesToComplete.Contains(p.Status) &&
+                        p.AppointmentDate <= DateTime.Now &&
+                        p.AppointmentDateArrive <= DateTime.Now) // <-- ลบเงื่อนไข IsActive ออกไปแล้ว
             .ToList();
 
-        if (CompletePosts.Any())
+        if (postsToComplete.Any())
         {
-            foreach (var post in CompletePosts)
+            foreach (var post in postsToComplete)
             {
-                // เปลี่ยนสถานะโพสต์
+                // เปลี่ยนสถานะโพสต์เป็น "Complete" และปิดการใช้งาน
                 post.Status = "Complete";
                 post.IsActive = false;
 
-                // ดึง join ที่เกี่ยวข้องแล้วอัปเดตสถานะ
+                // ดึงข้อมูลการเข้าร่วม (join) ที่เกี่ยวข้องเพื่ออัปเดตสถานะและให้คะแนน
                 var joins = _context.Joins
-                    .Include(j => j.User) // include User เพื่อให้ EF track คะแนน
+                    .Include(j => j.User) // Include User เพื่อให้ EF Core track การเปลี่ยนแปลงของ Score
                     .Where(j => j.PostId == post.PostId)
                     .ToList();
+
                 if (joins.Any())
                 {
                     foreach (var join in joins)
                     {
+                        // เปลี่ยนสถานะการเข้าร่วมเป็น "Complete"
                         join.Status = "Complete";
+                        // เพิ่มคะแนนให้กับผู้ใช้ที่เข้าร่วม
                         join.User.Score += post.Score;
                     }
                 }
             }
-            // SaveChanges ครั้งเดียว
+            // บันทึกการเปลี่ยนแปลงทั้งหมดลงฐานข้อมูลในครั้งเดียวเพื่อประสิทธิภาพที่ดีกว่า
             _context.SaveChanges();
         }
     }
-
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

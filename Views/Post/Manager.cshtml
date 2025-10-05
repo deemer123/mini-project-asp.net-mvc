@@ -112,11 +112,15 @@
                                     }
                                     else if (post.Status == "Full")
                                     {
-                                        <td><a class="btn join">กิจกรรมสมาชิกเต็ม</a></td>
+                                        <td><a class="btn bg_yellow">กิจกรรมสมาชิกเต็ม</a></td>
                                     }
                                     else if (post.Status == "Expired")
                                     {
-                                        <td><a class="btn join">กิจกรรมหมดอายุ</a></td>
+                                        <td><a class="btn bg_yellow">กิจกรรมหมดอายุ</a></td>
+                                    }
+                                    else if (post.Status == "Complete")
+                                    {
+                                        <td><a class="btn join">กิจกรรมสิ้นเสร็จ</a></td>
                                     }
                                     @* <td><a class="btn join" id="toggleBtn" asp-controller="Post" asp-action="Close" asp-route-postId="@post.PostId">เปิดรับสมัคร</a></td> *@
                                 </tr>
